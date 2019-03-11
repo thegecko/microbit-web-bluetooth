@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>micro:bit</title>
+        <script type="text/javascript" src="../bundles/microbit.bundle.js"></script>
+    </head>
+    <body>
+        <button id="find">find</button>
+        <script>
+            document.getElementById("find").onclick = async () => {
+                const device = await microbit.requestMicrobit(window.navigator.bluetooth);
+                if (device) {
+                    const bit = new microbit.Microbit(device);
+                    console.log(await bit.infoService.getDeviceInfo());
+                    bit.ledService.setText("Scarlett's micro:bit");
+                    bit.buttonService.addListener("buttonastatechanged", data => console.log(data));
+                }
+            }
+        </script>
+    </body>
+</html>

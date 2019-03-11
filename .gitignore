@@ -1,0 +1,8 @@
+.DS_Store
+.vscode
+node_modules
+bundles
+lib
+types
+docs
+npm-debug.log

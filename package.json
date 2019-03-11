@@ -1,0 +1,45 @@
+{
+  "name": "microbit-web-bluetooth",
+  "version": "1.0.0",
+  "description": "Web Bluetooth library for micro:bit",
+  "homepage": "https://github.com/thegecko/microbit-web-bluetooth",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "types/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thegecko/microbit-web-bluetooth.git"
+  },
+  "author": "Rob Moran <rob@thegecko.org>",
+  "keywords": [
+    "micro:bit",
+    "microbit",
+    "web-bluetooth",
+    "ble",
+    "bluetooth"
+  ],
+  "scripts": {
+    "gulp": "gulp"
+  },
+  "engines": {
+    "node": ">=8.14.0"
+  },
+  "devDependencies": {
+    "@types/web-bluetooth": "0.0.4",
+    "browserify": "^16.2.3",
+    "del": "^4.0.0",
+    "express": "^4.16.4",
+    "gulp": "^4.0.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-tslint": "^8.1.4",
+    "gulp-typedoc": "^2.2.2",
+    "gulp-typescript": "^5.0.0",
+    "merge2": "^1.2.3",
+    "tslint": "^5.13.1",
+    "tslint-eslint-rules": "^5.4.0",
+    "typedoc": "^0.14.2",
+    "typescript": "^3.3.3333",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
+  }
+}

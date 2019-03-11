@@ -1,0 +1,43 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run gulp
+      - persist_to_workspace:
+          root: ../
+          paths:
+            - project
+
+  deploy:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - attach_workspace:
+          at: ../
+      - run: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git config --global user.name thegecko
+      - run: git config --global user.email github@thegecko.org
+      - run: git add --force bundles lib types docs
+      - run: git stash save
+      - run: git checkout gh-pages
+      - run: git merge master --no-commit
+      - run: git checkout stash -- .
+      - run: git commit --allow-empty --message "Automatic Deployment [skip ci]"
+      - run: git push
+
+workflows:
+  version: 2
+  commit:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
