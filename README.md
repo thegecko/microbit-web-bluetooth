@@ -27,7 +27,9 @@ Web Bluetooth library for micro:bit
 
 ### Button Service
 - [x] Button A State
+- [x] Button A State Event
 - [x] Button B State
+- [x] Button B State Event
 
 ### Temperature Service
 - [ ] Temperature

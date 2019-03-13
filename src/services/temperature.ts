@@ -23,4 +23,15 @@
 * SOFTWARE.
 */
 
-export * from "./microbit";
+/**
+ * @hidden
+ */
+export const TemperatureUuid = "e95d6100-251d-470a-a062-fa1922dfa9a8";
+
+/**
+ * @hidden
+ */
+export enum TemperatureCharacteristic {
+    temperature = "e95d9250-251d-470a-a062-fa1922dfa9a8",
+    temperaturePeriod = "e95d1b25-251d-470a-a062-fa1922dfa9a8"
+}

@@ -23,4 +23,15 @@
 * SOFTWARE.
 */
 
-export * from "./microbit";
+/**
+ * @hidden
+ */
+export const AccelerometerUuid = "e95d0753-251d-470a-a062-fa1922dfa9a8";
+
+/**
+ * @hidden
+ */
+export enum AccelerometerCharacteristic {
+    accelerometerData = "e95dca4b-251d-470a-a062-fa1922dfa9a8",
+    accelerometerPeriod = "e95dfb24-251d-470a-a062-fa1922dfa9a8"
+}

@@ -23,4 +23,17 @@
 * SOFTWARE.
 */
 
-export * from "./microbit";
+/**
+ * @hidden
+ */
+export const EventUuid = "e95d93af-251d-470a-a062-fa1922dfa9a8";
+
+/**
+ * @hidden
+ */
+export enum EventCharacteristic {
+    microBitRequirements = "e95db84c-251d-470a-a062-fa1922dfa9a8",
+    microBitEvent = "e95d9775-251d-470a-a062-fa1922dfa9a8",
+    clientRequirements = "e95d23c4-251d-470a-a062-fa1922dfa9a8",
+    clientEvent = "e95d5404-251d-470a-a062-fa1922dfa9a8"
+}

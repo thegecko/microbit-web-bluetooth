@@ -10,9 +10,11 @@
                 const device = await microbit.requestMicrobit(window.navigator.bluetooth);
                 if (device) {
                     const bit = new microbit.Microbit(device);
-                    console.log(await bit.infoService.getDeviceInfo());
+                    console.log(await bit.deviceInformationService.getDeviceInfo());
                     bit.ledService.setText("Scarlett's micro:bit");
-                    bit.buttonService.addListener("buttonastatechanged", data => console.log(data));
+                    const handler = data => console.log(data);
+                    bit.buttonService.addEventListener("buttonastatechanged", handler);
+                    bit.buttonService.addEventListener("buttonbstatechanged", handler);
                 }
             }
         </script>

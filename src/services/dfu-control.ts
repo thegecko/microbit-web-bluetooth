@@ -23,4 +23,14 @@
 * SOFTWARE.
 */
 
-export * from "./microbit";
+/**
+ * @hidden
+ */
+export const DfuUuid = "e95d93b0-251d-470a-a062-fa1922dfa9a8";
+
+/**
+ * @hidden
+ */
+export enum DfuCharacteristic {
+    dfuControl = "e95d93b1-251d-470a-a062-fa1922dfa9a8"
+}

@@ -23,4 +23,17 @@
 * SOFTWARE.
 */
 
-export * from "./microbit";
+/**
+ * @hidden
+ */
+export const MagnetometerUuid = "e95df2d8-251d-470a-a062-fa1922dfa9a8";
+
+/**
+ * @hidden
+ */
+export enum MagnetometerCharacteristic {
+    magnetometerData = "e95dfb11-251d-470a-a062-fa1922dfa9a8",
+    magnetometerPeriod = "e95d386c-251d-470a-a062-fa1922dfa9a8",
+    magnetometerBearing = "e95d9715-251d-470a-a062-fa1922dfa9a8",
+    magnetometerCalibration = "e95db358-251d-470a-a062-fa1922dfa9a8"
+}

@@ -23,4 +23,17 @@
 * SOFTWARE.
 */
 
-export * from "./microbit";
+/**
+ * @hidden
+ */
+export const IoPinUuid = "e95d127b-251d-470a-a062-fa1922dfa9a8";
+
+/**
+ * @hidden
+ */
+export enum IoPinCharacteristic {
+    pinData = "e95d8d00-251d-470a-a062-fa1922dfa9a8",
+    pinAdConfiguration = "e95d5899-251d-470a-a062-fa1922dfa9a8",
+    pinIoConfiguration = "e95db9fe-251d-470a-a062-fa1922dfa9a8",
+    pwmControl = "e95dd822-251d-470a-a062-fa1922dfa9a8"
+}
