@@ -51,16 +51,17 @@ export interface ButtonEvents {
     buttonbstatechanged: ButtonState;
 }
 
-/**
- * @hidden
- */
-type ButtonDispatcher = TypedDispatcher<ButtonEvents>;
+export class ButtonService extends (EventDispatcher as new() => TypedDispatcher<ButtonEvents>) {
 
-export class ButtonService extends (EventDispatcher as new() => ButtonDispatcher) {
+    public static createService(services: BluetoothRemoteGATTService[]): ButtonService | undefined {
+        const found = services.find(service => service.uuid === ButtonUuid);
+        if (found) {
+            return new ButtonService(found);
+        }
+        return undefined;
+    }
 
-    private service!: BluetoothRemoteGATTService;
-
-    constructor(private server: BluetoothRemoteGATTServer) {
+    constructor(private service: BluetoothRemoteGATTService) {
         super();
         this.on("newListener", this.onNewListener.bind(this));
         this.on("removeListener", this.onRemoveListener.bind(this));
@@ -76,15 +77,8 @@ export class ButtonService extends (EventDispatcher as new() => ButtonDispatcher
         return value.getUint8(0);
     }
 
-    private async getService(): Promise<BluetoothRemoteGATTService> {
-        if (!this.service) {
-            this.service = await this.server.getPrimaryService(ButtonUuid);
-        }
-        return this.service;
-    }
-
-    private async getCharacteristValue(characteristic: ButtonCharacteristic): Promise<DataView> {
-        const service = await this.getService();
+    private async getCharacteristValue(characteristic: BluetoothCharacteristicUUID): Promise<DataView> {
+        const service = await this.service;
         const char = await service.getCharacteristic(characteristic);
         return await char.readValue();
     }
@@ -97,14 +91,14 @@ export class ButtonService extends (EventDispatcher as new() => ButtonDispatcher
         }
 
         if (event === "buttonastatechanged") {
-            const service = await this.getService();
+            const service = await this.service;
             const char = await service.getCharacteristic(ButtonCharacteristic.buttonAState);
             char.addEventListener("characteristicvaluechanged", this.buttonAStateChangedHandler.bind(this));
             await char.startNotifications();
         }
 
         if (event === "buttonbstatechanged") {
-            const service = await this.getService();
+            const service = await this.service;
             const char = await service.getCharacteristic(ButtonCharacteristic.buttonBState);
             char.addEventListener("characteristicvaluechanged", this.buttonBStateChangedHandler.bind(this));
             await char.startNotifications();
@@ -119,25 +113,27 @@ export class ButtonService extends (EventDispatcher as new() => ButtonDispatcher
         }
 
         if (event === "buttonastatechanged") {
-            const service = await this.getService();
+            const service = await this.service;
             const char = await service.getCharacteristic(ButtonCharacteristic.buttonAState);
-            char.removeEventListener("characteristicvaluechanged", this.buttonAStateChangedHandler);
+            char.removeEventListener("characteristicvaluechanged", this.buttonAStateChangedHandler.bind(this));
             await char.stopNotifications();
         }
 
         if (event === "buttonbstatechanged") {
-            const service = await this.getService();
+            const service = await this.service;
             const char = await service.getCharacteristic(ButtonCharacteristic.buttonBState);
-            char.removeEventListener("characteristicvaluechanged", this.buttonBStateChangedHandler);
+            char.removeEventListener("characteristicvaluechanged", this.buttonBStateChangedHandler.bind(this));
             await char.stopNotifications();
         }
     }
 
     private buttonAStateChangedHandler(event: Event) {
-        this.dispatchEvent("buttonastatechanged", (event.target as BluetoothRemoteGATTCharacteristic).value!.getUint8(0));
+        const view = (event.target as BluetoothRemoteGATTCharacteristic).value!;
+        this.dispatchEvent("buttonastatechanged", view.getUint8(0));
     }
 
     private buttonBStateChangedHandler(event: Event) {
-        this.dispatchEvent("buttonbstatechanged", (event.target as BluetoothRemoteGATTCharacteristic).value!.getUint8(0));
+        const view = (event.target as BluetoothRemoteGATTCharacteristic).value!;
+        this.dispatchEvent("buttonbstatechanged", view.getUint8(0));
     }
 }

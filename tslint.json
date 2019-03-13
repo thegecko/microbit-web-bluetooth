@@ -13,7 +13,7 @@
         "linebreak-style": [true, "LF"],
         "max-classes-per-file": false,
         "max-line-length": false,
-        "member-ordering": [true, { "order": ["static-field", "instance-field", "constructor", "static-method", "instance-method"] }],
+        "member-ordering": [true, { "order": ["static-field", "static-method", "instance-field", "constructor", "instance-method"] }],
         "no-bitwise": false,
         "no-console": true,
         "no-empty-interface": false,

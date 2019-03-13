@@ -9,12 +9,50 @@
             document.getElementById("find").onclick = async () => {
                 const device = await microbit.requestMicrobit(window.navigator.bluetooth);
                 if (device) {
-                    const bit = new microbit.Microbit(device);
-                    console.log(await bit.deviceInformationService.getDeviceInfo());
-                    bit.ledService.setText("Scarlett's micro:bit");
-                    const handler = data => console.log(data);
-                    bit.buttonService.addEventListener("buttonastatechanged", handler);
-                    bit.buttonService.addEventListener("buttonbstatechanged", handler);
+                    const services = await microbit.getServices(device);
+
+                    if (services.deviceInformationService) {
+                        console.log(await services.deviceInformationService.getDeviceInformation());
+                    }
+
+                    if (services.ledService) {
+                        await services.ledService.setScrollingDelay(50);
+                        await services.ledService.setMatrixState([
+                            [0, 0, 1, 0, 0],
+                            [1, 1, 1, 1, 1],
+                            [0, 0, 1, 0, 0],
+                            [0, 1, 0, 1, 0],
+                            [1, 0, 0, 0, 1]
+                        ]);
+                        console.log(await services.ledService.getMatrixState());
+                        services.ledService.setText("Web BLE");
+                    }
+
+                    if (services.buttonService) {
+                        const buttonHandler = data => console.log(data);
+                        services.buttonService.addEventListener("buttonastatechanged", buttonHandler);
+                        services.buttonService.addEventListener("buttonbstatechanged", buttonHandler);
+                    }
+/*
+                    if (services.temperatureService) {
+                        await services.temperatureService.setTemperaturePeriod(2000);
+                        const temperatureHandler = data => console.log(data);
+                        services.temperatureService.addEventListener("temperaturechanged", temperatureHandler);
+                    }
+
+                    if (services.accelerometerService) {
+                        await services.accelerometerService.setAccelerometerPeriod(20);
+                        const accelerometerHandler = data => console.log(data.detail);
+                        services.accelerometerService.addEventListener("accelerometerdatachanged", accelerometerHandler);
+                    }
+*/
+                    if (services.magnetometerService) {
+                        // await services.magnetometerService.setMagnetometerPeriod(100);
+                        console.log(await services.magnetometerService.getMagnetometerPeriod());
+                        const magnetometerHandler = data => console.log(data.detail);
+                        // services.magnetometerService.addEventListener("magnetometerdatachanged", magnetometerHandler);
+                        // services.magnetometerService.addEventListener("magnetometerbearingchanged", magnetometerHandler);
+                    }
                 }
             }
         </script>

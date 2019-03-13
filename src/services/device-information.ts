@@ -26,7 +26,7 @@
 /**
  * @hidden
  */
-export const DeviceInformationUuid = 0x180A;
+export const DeviceInformationUuid = "0000180a-0000-1000-8000-00805f9b34fb";
 
 /**
  * @hidden
@@ -48,14 +48,20 @@ export interface DeviceInformation {
 }
 
 export class DeviceInformationService {
-    private service!: BluetoothRemoteGATTService;
 
-    constructor(private server: BluetoothRemoteGATTServer) {
+    public static createService(services: BluetoothRemoteGATTService[]): DeviceInformationService | undefined {
+        const found = services.find(service => service.uuid === DeviceInformationUuid);
+        if (found) {
+            return new DeviceInformationService(found);
+        }
+        return undefined;
     }
 
-    public async getDeviceInfo(): Promise<DeviceInformation> {
-        const service = await this.getService();
-        const characteristics = await service.getCharacteristics();
+    constructor(private service: BluetoothRemoteGATTService) {
+    }
+
+    public async getDeviceInformation(): Promise<DeviceInformation> {
+        const characteristics = await this.service.getCharacteristics();
         const info: DeviceInformation = {};
 
         const modelNumberChar = characteristics.find(char => char.uuid === DeviceInformationCharacteristic.modelNumber);
@@ -70,13 +76,6 @@ export class DeviceInformationService {
         if (manufacturerChar) info.manufacturer = await this.readStringCharacteristic(manufacturerChar);
 
         return info;
-    }
-
-    private async getService(): Promise<BluetoothRemoteGATTService> {
-        if (!this.service) {
-            this.service = await this.server.getPrimaryService(DeviceInformationUuid);
-        }
-        return this.service;
     }
 
     private async readStringCharacteristic(characteristic: BluetoothRemoteGATTCharacteristic): Promise<string> {

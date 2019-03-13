@@ -26,17 +26,30 @@
 import { DeviceInformationUuid, DeviceInformationService } from "./services/device-information";
 import { ButtonUuid, ButtonService } from "./services/button";
 import { LedUuid, LedService } from "./services/led";
-import { TemperatureUuid } from "./services/temperature";
-import { AccelerometerUuid } from "./services/accelerometer";
-import { MagnetometerUuid } from "./services/magnetometer";
+import { TemperatureUuid, TemperatureService } from "./services/temperature";
+import { AccelerometerUuid, AccelerometerService } from "./services/accelerometer";
+import { MagnetometerUuid, MagnetometerService } from "./services/magnetometer";
 import { IoPinUuid } from "./services/io-pin";
 import { UartUuid } from "./services/uart";
 import { EventUuid } from "./services/event";
 import { DfuUuid } from "./services/dfu-control";
 
+export interface Services {
+    deviceInformationService?: DeviceInformationService;
+    buttonService?: ButtonService;
+    ledService?: LedService;
+    temperatureService?: TemperatureService;
+    accelerometerService?: AccelerometerService;
+    magnetometerService?: MagnetometerService;
+}
+
 export const requestMicrobit = async (bluetooth: Bluetooth): Promise<BluetoothDevice | undefined> => {
     const device = await bluetooth.requestDevice({
-        acceptAllDevices: true,
+        filters: [
+            {
+                namePrefix: "BBC micro:bit"
+            }
+        ],
         optionalServices: [
             DeviceInformationUuid,
             ButtonUuid,
@@ -60,19 +73,17 @@ export const requestMicrobit = async (bluetooth: Bluetooth): Promise<BluetoothDe
     return device;
 };
 
-export class Microbit {
-    constructor(private device: BluetoothDevice) {
-    }
+export const getServices = async (device: BluetoothDevice): Promise<Services> => {
+    const services = await device.gatt!.getPrimaryServices();
 
-    public get deviceInformationService(): DeviceInformationService {
-        return new DeviceInformationService(this.device.gatt!);
-    }
+    const microbitServices: Services = {
+        deviceInformationService: DeviceInformationService.createService(services),
+        buttonService: ButtonService.createService(services),
+        ledService: LedService.createService(services),
+        temperatureService: TemperatureService.createService(services),
+        accelerometerService: AccelerometerService.createService(services),
+        magnetometerService: MagnetometerService.createService(services)
+    };
 
-    public get ledService(): LedService {
-        return new LedService(this.device.gatt!);
-    }
-
-    public get buttonService(): ButtonService {
-        return new ButtonService(this.device.gatt!);
-    }
-}
+    return microbitServices;
+};
