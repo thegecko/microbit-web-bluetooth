@@ -68,7 +68,7 @@ export class AccelerometerService extends (EventDispatcher as new() => TypedDisp
         this.on("removeListener", this.onRemoveListener.bind(this));
     }
 
-    public async getAccelerometerData(): Promise<AccelerometerData> {
+    public async readAccelerometerData(): Promise<AccelerometerData> {
         const view = await this.getCharacteristValue(AccelerometerCharacteristic.accelerometerData);
         return this.dataViewToAccelerometerData(view);
     }

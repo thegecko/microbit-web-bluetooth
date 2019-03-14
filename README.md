@@ -62,10 +62,10 @@ Web Bluetooth library for micro:bit implementing the [micro:bit Bluetooth Profil
 - [ ] RX
 
 ### Event Service
-- [ ] MicroBit Requirements
-- [ ] MicroBit Event
-- [ ] Client Requirements
-- [ ] Client Event
+- [x] MicroBit Requirements
+- [x] MicroBit Event
+- [x] Client Requirements
+- [x] Client Event
 
 ### DFU Control Service
 - [ ] DFU Control

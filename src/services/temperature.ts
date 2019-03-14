@@ -60,7 +60,7 @@ export class TemperatureService extends (EventDispatcher as new() => TypedDispat
         this.on("removeListener", this.onRemoveListener.bind(this));
     }
 
-    public async getTemperature(): Promise<number> {
+    public async readTemperature(): Promise<number> {
         const value = await this.getCharacteristValue(TemperatureCharacteristic.temperature);
         return value.getInt8(0);
     }

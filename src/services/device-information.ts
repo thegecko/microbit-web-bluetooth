@@ -60,7 +60,7 @@ export class DeviceInformationService {
     constructor(private service: BluetoothRemoteGATTService) {
     }
 
-    public async getDeviceInformation(): Promise<DeviceInformation> {
+    public async readDeviceInformation(): Promise<DeviceInformation> {
         const characteristics = await this.service.getCharacteristics();
         const info: DeviceInformation = {};
 

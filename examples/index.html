@@ -12,7 +12,7 @@
                     const services = await microbit.getServices(device);
 
                     if (services.deviceInformationService) {
-                        console.log(await services.deviceInformationService.getDeviceInformation());
+                        console.log(await services.deviceInformationService.readDeviceInformation());
                     }
 
                     if (services.ledService) {
@@ -25,7 +25,7 @@
                             [1, 0, 0, 0, 1]
                         ]);
                         console.log(await services.ledService.getMatrixState());
-                        services.ledService.setText("Web BLE");
+                        services.ledService.writeText("Web BLE");
                     }
 
                     if (services.buttonService) {

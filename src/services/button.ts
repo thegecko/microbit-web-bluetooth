@@ -67,12 +67,12 @@ export class ButtonService extends (EventDispatcher as new() => TypedDispatcher<
         this.on("removeListener", this.onRemoveListener.bind(this));
     }
 
-    public async getButtonAState(): Promise<ButtonState> {
+    public async readButtonAState(): Promise<ButtonState> {
         const value = await this.getCharacteristValue(ButtonCharacteristic.buttonAState);
         return value.getUint8(0);
     }
 
-    public async getButtonBState(): Promise<ButtonState> {
+    public async readButtonBState(): Promise<ButtonState> {
         const value = await this.getCharacteristValue(ButtonCharacteristic.buttonBState);
         return value.getUint8(0);
     }

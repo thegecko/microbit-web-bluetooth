@@ -31,7 +31,7 @@ import { AccelerometerUuid, AccelerometerService } from "./services/acceleromete
 import { MagnetometerUuid, MagnetometerService } from "./services/magnetometer";
 import { IoPinUuid } from "./services/io-pin";
 import { UartUuid } from "./services/uart";
-import { EventUuid } from "./services/event";
+import { EventUuid, EventService } from "./services/event";
 import { DfuUuid } from "./services/dfu-control";
 
 export interface Services {
@@ -41,6 +41,7 @@ export interface Services {
     temperatureService?: TemperatureService;
     accelerometerService?: AccelerometerService;
     magnetometerService?: MagnetometerService;
+    eventService?: EventService;
 }
 
 export const requestMicrobit = async (bluetooth: Bluetooth): Promise<BluetoothDevice | undefined> => {
@@ -82,7 +83,8 @@ export const getServices = async (device: BluetoothDevice): Promise<Services> =>
         ledService: LedService.createService(services),
         temperatureService: TemperatureService.createService(services),
         accelerometerService: AccelerometerService.createService(services),
-        magnetometerService: MagnetometerService.createService(services)
+        magnetometerService: MagnetometerService.createService(services),
+        eventService: EventService.createService(services)
     };
 
     return microbitServices;

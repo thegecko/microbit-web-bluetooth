@@ -58,7 +58,7 @@ export class LedService {
     constructor(private service: BluetoothRemoteGATTService) {
     }
 
-    public async setText(text: string): Promise<void> {
+    public async writeText(text: string): Promise<void> {
         const characteristic = await this.service.getCharacteristic(LedCharacteristic.ledText);
         const encoded = this.encodeString(text);
         return characteristic.writeValue(encoded);

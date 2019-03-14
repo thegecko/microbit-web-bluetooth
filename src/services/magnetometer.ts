@@ -71,7 +71,7 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
         this.on("removeListener", this.onRemoveListener.bind(this));
     }
 
-    public async getMagnetometerData(): Promise<MagnetometerData> {
+    public async readMagnetometerData(): Promise<MagnetometerData> {
         const view = await this.getCharacteristValue(MagnetometerCharacteristic.magnetometerData);
         return this.dataViewToMagnetometerData(view);
     }
