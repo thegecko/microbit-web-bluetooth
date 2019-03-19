@@ -39,12 +39,9 @@ export interface TypedDispatcher<T> {
     prependListener<K extends keyof T>(event: K, listener: (data: T[K]) => void): this;
     prependOnceListener<K extends keyof T>(event: K, listener: (data: T[K]) => void): this;
     removeListener<K extends keyof T>(event: K, listener: (data: T[K]) => void): this;
-    off<K extends keyof T>(event: K, listener: (data: T[K]) => void): this;
     removeAllListeners<K extends keyof T>(event?: K): this;
     // tslint:disable-next-line:ban-types
     listeners<K extends keyof T>(event: K): Function[];
-    // tslint:disable-next-line:ban-types
-    rawListeners<K extends keyof T>(event: K): Function[];
     emit<K extends keyof T>(event: K, data: T[K]): boolean;
     // tslint:disable-next-line:array-type
     eventNames<K extends keyof T>(): Array<K>;

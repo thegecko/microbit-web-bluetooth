@@ -127,8 +127,8 @@ export class AccelerometerService extends (EventDispatcher as new() => TypedDisp
     private dataViewToAccelerometerData(view: DataView): AccelerometerData {
         return {
             x: view.getInt16(0, true) / 1000.0,
-            y: view.getInt16(1, true) / 1000.0,
-            z: view.getInt16(2, true) / 1000.0
+            y: view.getInt16(2, true) / 1000.0,
+            z: view.getInt16(4, true) / 1000.0
         };
     }
 }

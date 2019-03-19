@@ -1,9 +1,10 @@
 .DS_Store
 .vscode
+docs-theme
+hex
 node_modules
-bundles
-lib
-types
-docs
+.gitignore
+circle.yml
+index.html
 npm-debug.log
 server.js

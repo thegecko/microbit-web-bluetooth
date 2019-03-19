@@ -1,6 +1,6 @@
 {
   "name": "microbit-web-bluetooth",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "Web Bluetooth library for micro:bit",
   "homepage": "https://github.com/thegecko/microbit-web-bluetooth",
   "license": "MIT",
@@ -25,7 +25,6 @@
     "node": ">=8.14.0"
   },
   "devDependencies": {
-    "@types/web-bluetooth": "0.0.4",
     "browserify": "^16.2.3",
     "del": "^4.0.0",
     "express": "^4.16.4",
@@ -41,5 +40,9 @@
     "typescript": "^3.3.3333",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
+  },
+  "dependencies": {
+    "@types/web-bluetooth": "0.0.4",
+    "@types/node": "8.10.40"
   }
 }

@@ -65,17 +65,19 @@ export const requestMicrobit = async (bluetooth: Bluetooth): Promise<BluetoothDe
         ]
     });
 
-    if (!device) return undefined;
-
-    if (device.gatt) {
-        await device.gatt.connect();
-    }
-
     return device;
 };
 
 export const getServices = async (device: BluetoothDevice): Promise<Services> => {
-    const services = await device.gatt!.getPrimaryServices();
+    if (!device || !device.gatt) {
+        return {};
+    }
+
+    if (!device.gatt.connected) {
+        await device.gatt.connect();
+    }
+
+    const services = await device.gatt.getPrimaryServices();
 
     const microbitServices: Services = {
         deviceInformationService: DeviceInformationService.createService(services),
