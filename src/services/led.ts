@@ -115,7 +115,7 @@ export class LedService {
             bools[i] = (byte & 1) === 1;
             byte >>= 1;
         }
-        return bools;
+        return bools.reverse();
     }
 
     private ledMatrixToView(matrix: LedMatrix): DataView {
@@ -127,6 +127,6 @@ export class LedService {
     }
 
     private boolArrayToByte(bools: boolean[]): number {
-        return bools.reduce((res, x) => res << 1 | (x ? 1 : 0), 0);
+        return bools.reduce((byte, bool) => byte << 1 | (bool ? 1 : 0), 0);
     }
 }

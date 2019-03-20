@@ -18,14 +18,14 @@
                     if (services.ledService) {
                         await services.ledService.setScrollingDelay(50);
                         await services.ledService.setMatrixState([
-                            [0, 0, 1, 0, 0],
+                            [1, 0, 1, 0, 0],
                             [1, 1, 1, 1, 1],
                             [0, 0, 1, 0, 0],
                             [0, 1, 0, 1, 0],
                             [1, 0, 0, 0, 1]
                         ]);
                         console.log(await services.ledService.getMatrixState());
-                        services.ledService.writeText("Web BLE");
+                        // services.ledService.writeText("Web BLE");
                     }
 
                     if (services.buttonService) {
