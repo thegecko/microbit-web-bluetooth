@@ -46,16 +46,25 @@ export interface TemperatureEvents {
 
 export class TemperatureService extends (EventDispatcher as new() => TypedDispatcher<TemperatureEvents>) {
 
-    public static createService(services: BluetoothRemoteGATTService[]): TemperatureService | undefined {
+    public static async createService(services: BluetoothRemoteGATTService[]): Promise<TemperatureService | undefined> {
         const found = services.find(service => service.uuid === TemperatureUuid);
-        if (found) {
-            return new TemperatureService(found);
+        if (!found) {
+            return undefined;
         }
-        return undefined;
+
+        const temperatureService = new TemperatureService(found);
+        await temperatureService.init();
+        return temperatureService;
     }
 
     constructor(private service: BluetoothRemoteGATTService) {
         super();
+    }
+
+    private async init() {
+        const char = await this.service.getCharacteristic(TemperatureCharacteristic.temperature);
+        await char.startNotifications();
+
         this.on("newListener", this.onNewListener.bind(this));
         this.on("removeListener", this.onRemoveListener.bind(this));
     }
@@ -92,7 +101,6 @@ export class TemperatureService extends (EventDispatcher as new() => TypedDispat
         if (event === "temperaturechanged") {
             const char = await this.service.getCharacteristic(TemperatureCharacteristic.temperature);
             char.addEventListener("characteristicvaluechanged", this.temperatureChangedHandler.bind(this));
-            await char.startNotifications();
         }
     }
 
@@ -106,7 +114,6 @@ export class TemperatureService extends (EventDispatcher as new() => TypedDispat
         if (event === "temperaturechanged") {
             const char = await this.service.getCharacteristic(TemperatureCharacteristic.temperature);
             char.removeEventListener("characteristicvaluechanged", this.temperatureChangedHandler.bind(this));
-            await char.stopNotifications();
         }
     }
 

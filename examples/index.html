@@ -17,6 +17,7 @@
 
                     if (services.ledService) {
                         await services.ledService.setScrollingDelay(50);
+                        await services.ledService.writeText("Web BLE");
                         await services.ledService.setMatrixState([
                             [1, 0, 1, 0, 0],
                             [1, 1, 1, 1, 1],
@@ -25,7 +26,6 @@
                             [1, 0, 0, 0, 1]
                         ]);
                         console.log(await services.ledService.getMatrixState());
-                        // services.ledService.writeText("Web BLE");
                     }
 
                     if (services.buttonService) {
@@ -33,25 +33,25 @@
                         services.buttonService.addEventListener("buttonastatechanged", buttonHandler);
                         services.buttonService.addEventListener("buttonbstatechanged", buttonHandler);
                     }
-/*
+
                     if (services.temperatureService) {
-                        await services.temperatureService.setTemperaturePeriod(2000);
+                        await services.temperatureService.setTemperaturePeriod(200);
                         const temperatureHandler = data => console.log(data);
                         services.temperatureService.addEventListener("temperaturechanged", temperatureHandler);
                     }
 
                     if (services.accelerometerService) {
-                        await services.accelerometerService.setAccelerometerPeriod(20);
+                        await services.accelerometerService.setAccelerometerPeriod(80);
                         const accelerometerHandler = data => console.log(data.detail);
                         services.accelerometerService.addEventListener("accelerometerdatachanged", accelerometerHandler);
                     }
-*/
+
                     if (services.magnetometerService) {
                         // await services.magnetometerService.setMagnetometerPeriod(100);
                         console.log(await services.magnetometerService.getMagnetometerPeriod());
                         const magnetometerHandler = data => console.log(data.detail);
-                        // services.magnetometerService.addEventListener("magnetometerdatachanged", magnetometerHandler);
-                        // services.magnetometerService.addEventListener("magnetometerbearingchanged", magnetometerHandler);
+                        services.magnetometerService.addEventListener("magnetometerdatachanged", magnetometerHandler);
+                        services.magnetometerService.addEventListener("magnetometerbearingchanged", magnetometerHandler);
                     }
                 }
             }

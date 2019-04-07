@@ -53,16 +53,27 @@ export interface ButtonEvents {
 
 export class ButtonService extends (EventDispatcher as new() => TypedDispatcher<ButtonEvents>) {
 
-    public static createService(services: BluetoothRemoteGATTService[]): ButtonService | undefined {
+    public static async createService(services: BluetoothRemoteGATTService[]): Promise<ButtonService | undefined> {
         const found = services.find(service => service.uuid === ButtonUuid);
-        if (found) {
-            return new ButtonService(found);
+        if (!found) {
+            return undefined;
         }
-        return undefined;
+
+        const buttonService = new ButtonService(found);
+        await buttonService.init();
+        return buttonService;
     }
 
     constructor(private service: BluetoothRemoteGATTService) {
         super();
+    }
+
+    private async init() {
+        const charA = await this.service.getCharacteristic(ButtonCharacteristic.buttonAState);
+        await charA.startNotifications();
+        const charB = await this.service.getCharacteristic(ButtonCharacteristic.buttonBState);
+        await charB.startNotifications();
+
         this.on("newListener", this.onNewListener.bind(this));
         this.on("removeListener", this.onRemoveListener.bind(this));
     }
@@ -91,17 +102,13 @@ export class ButtonService extends (EventDispatcher as new() => TypedDispatcher<
         }
 
         if (event === "buttonastatechanged") {
-            const service = await this.service;
-            const char = await service.getCharacteristic(ButtonCharacteristic.buttonAState);
+            const char = await this.service.getCharacteristic(ButtonCharacteristic.buttonAState);
             char.addEventListener("characteristicvaluechanged", this.buttonAStateChangedHandler.bind(this));
-            await char.startNotifications();
         }
 
         if (event === "buttonbstatechanged") {
-            const service = await this.service;
-            const char = await service.getCharacteristic(ButtonCharacteristic.buttonBState);
+            const char = await this.service.getCharacteristic(ButtonCharacteristic.buttonBState);
             char.addEventListener("characteristicvaluechanged", this.buttonBStateChangedHandler.bind(this));
-            await char.startNotifications();
         }
     }
 

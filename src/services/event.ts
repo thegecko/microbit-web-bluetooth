@@ -54,16 +54,25 @@ export interface MicrobitEvents {
 
 export class EventService extends (EventDispatcher as new() => TypedDispatcher<MicrobitEvents>) {
 
-    public static createService(services: BluetoothRemoteGATTService[]): EventService | undefined {
+    public static async createService(services: BluetoothRemoteGATTService[]): Promise<EventService | undefined> {
         const found = services.find(service => service.uuid === EventUuid);
-        if (found) {
-            return new EventService(found);
+        if (!found) {
+            return undefined;
         }
-        return undefined;
+
+        const eventService = new EventService(found);
+        await eventService.init();
+        return eventService;
     }
 
     constructor(private service: BluetoothRemoteGATTService) {
         super();
+    }
+
+    private async init() {
+        const char = await this.service.getCharacteristic(EventCharacteristic.microBitEvent);
+        await char.startNotifications();
+
         this.on("newListener", this.onNewListener.bind(this));
         this.on("removeListener", this.onRemoveListener.bind(this));
     }
@@ -109,13 +118,11 @@ export class EventService extends (EventDispatcher as new() => TypedDispatcher<M
         if (event === "microbitevent") {
             const char = await this.service.getCharacteristic(EventCharacteristic.microBitEvent);
             char.addEventListener("characteristicvaluechanged", this.eventHandler.bind(this));
-            await char.startNotifications();
         }
 
         if (event === "microbitrequirementschanged") {
             const char = await this.service.getCharacteristic(EventCharacteristic.microBitRequirements);
             char.addEventListener("characteristicvaluechanged", this.microbitRequirementsChangedHandler.bind(this));
-            await char.startNotifications();
         }
     }
 

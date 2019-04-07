@@ -54,16 +54,25 @@ export interface AccelerometerEvents {
 
 export class AccelerometerService extends (EventDispatcher as new() => TypedDispatcher<AccelerometerEvents>) {
 
-    public static createService(services: BluetoothRemoteGATTService[]): AccelerometerService | undefined {
+    public static async createService(services: BluetoothRemoteGATTService[]): Promise<AccelerometerService | undefined> {
         const found = services.find(service => service.uuid === AccelerometerUuid);
-        if (found) {
-            return new AccelerometerService(found);
+        if (!found) {
+            return undefined;
         }
-        return undefined;
+
+        const accelerometerService = new AccelerometerService(found);
+        await accelerometerService.init();
+        return accelerometerService;
     }
 
     constructor(private service: BluetoothRemoteGATTService) {
         super();
+    }
+
+    private async init() {
+        const char = await this.service.getCharacteristic(AccelerometerCharacteristic.accelerometerData);
+        await char.startNotifications();
+
         this.on("newListener", this.onNewListener.bind(this));
         this.on("removeListener", this.onRemoveListener.bind(this));
     }
@@ -100,7 +109,6 @@ export class AccelerometerService extends (EventDispatcher as new() => TypedDisp
         if (event === "accelerometerdatachanged") {
             const char = await this.service.getCharacteristic(AccelerometerCharacteristic.accelerometerData);
             char.addEventListener("characteristicvaluechanged", this.accelerometerDataChangedHandler.bind(this));
-            await char.startNotifications();
         }
     }
 
@@ -114,7 +122,6 @@ export class AccelerometerService extends (EventDispatcher as new() => TypedDisp
         if (event === "accelerometerdatachanged") {
             const char = await this.service.getCharacteristic(AccelerometerCharacteristic.accelerometerData);
             char.removeEventListener("characteristicvaluechanged", this.accelerometerDataChangedHandler.bind(this));
-            await char.stopNotifications();
         }
     }
 

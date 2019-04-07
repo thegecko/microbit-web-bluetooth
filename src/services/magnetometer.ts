@@ -57,16 +57,25 @@ export interface MagnetometerEvents {
 
 export class MagnetometerService extends (EventDispatcher as new() => TypedDispatcher<MagnetometerEvents>) {
 
-    public static createService(services: BluetoothRemoteGATTService[]): MagnetometerService | undefined {
+    public static async createService(services: BluetoothRemoteGATTService[]): Promise<MagnetometerService | undefined> {
         const found = services.find(service => service.uuid === MagnetometerUuid);
-        if (found) {
-            return new MagnetometerService(found);
+        if (!found) {
+            return undefined;
         }
-        return undefined;
+
+        const magnetometerService = new MagnetometerService(found);
+        await magnetometerService.init();
+        return magnetometerService;
     }
 
     constructor(private service: BluetoothRemoteGATTService) {
         super();
+    }
+
+    private async init() {
+        const char = await this.service.getCharacteristic(MagnetometerCharacteristic.magnetometerData);
+        await char.startNotifications();
+
         this.on("newListener", this.onNewListener.bind(this));
         this.on("removeListener", this.onRemoveListener.bind(this));
     }
@@ -111,13 +120,11 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
         if (event === "magnetometerdatachanged") {
             const char = await this.service.getCharacteristic(MagnetometerCharacteristic.magnetometerData);
             char.addEventListener("characteristicvaluechanged", this.magnetometerDataChangedHandler.bind(this));
-            await char.startNotifications();
         }
 
         if (event === "magnetometerbearingchanged") {
             const char = await this.service.getCharacteristic(MagnetometerCharacteristic.magnetometerBearing);
             char.addEventListener("characteristicvaluechanged", this.magnetometerBearingChangedHandler.bind(this));
-            await char.startNotifications();
         }
     }
 
