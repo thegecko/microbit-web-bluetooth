@@ -46,6 +46,13 @@ export interface MagnetometerData {
     z: number;
 }
 
+export enum MagnetometerCalibration {
+    unknown = 0,
+    requested = 1,
+    completed = 2,
+    errored = 3
+}
+
 export type MagnetometerPeriod = 1 | 2 | 5 | 10 | 20 | 80 | 160 | 640;
 
 export interface MagnetometerEvents {
@@ -53,6 +60,7 @@ export interface MagnetometerEvents {
     removeListener: keyof MagnetometerEvents;
     magnetometerdatachanged: MagnetometerData;
     magnetometerbearingchanged: number;
+    magnetometercalibrationchanged: MagnetometerCalibration;
 }
 
 export class MagnetometerService extends (EventDispatcher as new() => TypedDispatcher<MagnetometerEvents>) {
@@ -73,11 +81,22 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
     }
 
     private async init() {
-        const char = await this.service.getCharacteristic(MagnetometerCharacteristic.magnetometerData);
-        await char.startNotifications();
+        const charD = await this.service.getCharacteristic(MagnetometerCharacteristic.magnetometerData);
+        await charD.startNotifications();
+        const charB = await this.service.getCharacteristic(MagnetometerCharacteristic.magnetometerBearing);
+        await charB.startNotifications();
+        const charC = await this.service.getCharacteristic(MagnetometerCharacteristic.magnetometerCalibration);
+        await charC.startNotifications();
 
         this.on("newListener", this.onNewListener.bind(this));
         this.on("removeListener", this.onRemoveListener.bind(this));
+    }
+
+    public async calibrate() {
+        const char = await this.service.getCharacteristic(MagnetometerCharacteristic.magnetometerCalibration);
+        const view = new DataView(new ArrayBuffer(1));
+        view.setUint8(0, 1);
+        return char.writeValue(view);
     }
 
     public async readMagnetometerData(): Promise<MagnetometerData> {
@@ -126,6 +145,11 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
             const char = await this.service.getCharacteristic(MagnetometerCharacteristic.magnetometerBearing);
             char.addEventListener("characteristicvaluechanged", this.magnetometerBearingChangedHandler.bind(this));
         }
+
+        if (event === "magnetometercalibrationchanged") {
+            const char = await this.service.getCharacteristic(MagnetometerCharacteristic.magnetometerCalibration);
+            char.addEventListener("characteristicvaluechanged", this.magnetometerCalibrationChangedHandler.bind(this));
+        }
     }
 
     private async onRemoveListener(event: keyof MagnetometerEvents) {
@@ -138,13 +162,16 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
         if (event === "magnetometerdatachanged") {
             const char = await this.service.getCharacteristic(MagnetometerCharacteristic.magnetometerData);
             char.removeEventListener("characteristicvaluechanged", this.magnetometerDataChangedHandler.bind(this));
-            await char.stopNotifications();
         }
 
         if (event === "magnetometerbearingchanged") {
             const char = await this.service.getCharacteristic(MagnetometerCharacteristic.magnetometerBearing);
             char.removeEventListener("characteristicvaluechanged", this.magnetometerBearingChangedHandler.bind(this));
-            await char.stopNotifications();
+        }
+
+        if (event === "magnetometercalibrationchanged") {
+            const char = await this.service.getCharacteristic(MagnetometerCharacteristic.magnetometerCalibration);
+            char.removeEventListener("characteristicvaluechanged", this.magnetometerCalibrationChangedHandler.bind(this));
         }
     }
 
@@ -158,6 +185,13 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
         const view = (event.target as BluetoothRemoteGATTCharacteristic).value!;
         if (view.byteLength === 2) {
             this.dispatchEvent("magnetometerbearingchanged", view.getUint16(0, true));
+        }
+    }
+
+    private magnetometerCalibrationChangedHandler(event: Event) {
+        const view = (event.target as BluetoothRemoteGATTCharacteristic).value!;
+        if (view.byteLength === 1) {
+            this.dispatchEvent("magnetometerbearingchanged", view.getUint8(0) as MagnetometerCalibration);
         }
     }
 

@@ -10,7 +10,7 @@
                 const device = await microbit.requestMicrobit(window.navigator.bluetooth);
                 if (device) {
                     const services = await microbit.getServices(device);
-
+/*
                     if (services.deviceInformationService) {
                         console.log(await services.deviceInformationService.readDeviceInformation());
                     }
@@ -45,13 +45,17 @@
                         const accelerometerHandler = data => console.log(data.detail);
                         services.accelerometerService.addEventListener("accelerometerdatachanged", accelerometerHandler);
                     }
-
+*/
                     if (services.magnetometerService) {
-                        // await services.magnetometerService.setMagnetometerPeriod(100);
-                        console.log(await services.magnetometerService.getMagnetometerPeriod());
                         const magnetometerHandler = data => console.log(data.detail);
+                        services.magnetometerService.addEventListener("magnetometercalibrationchanged", magnetometerHandler);
+                        await services.magnetometerService.calibrate();
+                        // await services.magnetometerService.setMagnetometerPeriod(100);
+                        /*
+                        console.log(await services.magnetometerService.getMagnetometerPeriod());
                         services.magnetometerService.addEventListener("magnetometerdatachanged", magnetometerHandler);
                         services.magnetometerService.addEventListener("magnetometerbearingchanged", magnetometerHandler);
+                        */
                     }
                 }
             }

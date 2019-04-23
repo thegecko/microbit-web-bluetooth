@@ -70,8 +70,10 @@ export class EventService extends (EventDispatcher as new() => TypedDispatcher<M
     }
 
     private async init() {
-        const char = await this.service.getCharacteristic(EventCharacteristic.microBitEvent);
-        await char.startNotifications();
+        const charE = await this.service.getCharacteristic(EventCharacteristic.microBitEvent);
+        await charE.startNotifications();
+        const charR = await this.service.getCharacteristic(EventCharacteristic.microBitRequirements);
+        await charR.startNotifications();
 
         this.on("newListener", this.onNewListener.bind(this));
         this.on("removeListener", this.onRemoveListener.bind(this));
@@ -136,13 +138,11 @@ export class EventService extends (EventDispatcher as new() => TypedDispatcher<M
         if (event === "microbitevent") {
             const char = await this.service.getCharacteristic(EventCharacteristic.microBitEvent);
             char.removeEventListener("characteristicvaluechanged", this.eventHandler.bind(this));
-            await char.stopNotifications();
         }
 
         if (event === "microbitrequirementschanged") {
             const char = await this.service.getCharacteristic(EventCharacteristic.microBitRequirements);
             char.removeEventListener("characteristicvaluechanged", this.microbitRequirementsChangedHandler.bind(this));
-            await char.stopNotifications();
         }
     }
 
