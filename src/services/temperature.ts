@@ -62,8 +62,7 @@ export class TemperatureService extends (EventDispatcher as new() => TypedDispat
     }
 
     private async init() {
-        const char = await this.service.getCharacteristic(TemperatureCharacteristic.temperature);
-        await char.startNotifications();
+        await this.startNotifications(TemperatureCharacteristic.temperature);
 
         this.on("newListener", this.onNewListener.bind(this));
         this.on("removeListener", this.onRemoveListener.bind(this));
@@ -89,6 +88,11 @@ export class TemperatureService extends (EventDispatcher as new() => TypedDispat
     private async getCharacteristValue(characteristic: BluetoothCharacteristicUUID): Promise<DataView> {
         const char = await this.service.getCharacteristic(characteristic);
         return await char.readValue();
+    }
+
+    private async startNotifications(characteristic: BluetoothCharacteristicUUID) {
+        const char = await this.service.getCharacteristic(characteristic);
+        await char.startNotifications();
     }
 
     private async onNewListener(event: keyof TemperatureEvents): Promise<void> {

@@ -70,10 +70,8 @@ export class EventService extends (EventDispatcher as new() => TypedDispatcher<M
     }
 
     private async init() {
-        const charE = await this.service.getCharacteristic(EventCharacteristic.microBitEvent);
-        await charE.startNotifications();
-        const charR = await this.service.getCharacteristic(EventCharacteristic.microBitRequirements);
-        await charR.startNotifications();
+        await this.startNotifications(EventCharacteristic.microBitEvent);
+        await this.startNotifications(EventCharacteristic.microBitRequirements);
 
         this.on("newListener", this.onNewListener.bind(this));
         this.on("removeListener", this.onRemoveListener.bind(this));
@@ -108,6 +106,11 @@ export class EventService extends (EventDispatcher as new() => TypedDispatcher<M
     private async getCharacteristValue(characteristic: BluetoothCharacteristicUUID): Promise<DataView> {
         const char = await this.service.getCharacteristic(characteristic);
         return await char.readValue();
+    }
+
+    private async startNotifications(characteristic: BluetoothCharacteristicUUID) {
+        const char = await this.service.getCharacteristic(characteristic);
+        await char.startNotifications();
     }
 
     private async onNewListener(event: keyof MicrobitEvents): Promise<void> {

@@ -1,5 +1,6 @@
 .DS_Store
 .vscode
+.rpt2_cache
 docs-theme
 hex
 node_modules
@@ -7,4 +8,3 @@ node_modules
 circle.yml
 index.html
 npm-debug.log
-server.js

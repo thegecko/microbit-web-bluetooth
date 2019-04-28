@@ -69,10 +69,8 @@ export class ButtonService extends (EventDispatcher as new() => TypedDispatcher<
     }
 
     private async init() {
-        const charA = await this.service.getCharacteristic(ButtonCharacteristic.buttonAState);
-        await charA.startNotifications();
-        const charB = await this.service.getCharacteristic(ButtonCharacteristic.buttonBState);
-        await charB.startNotifications();
+        await this.startNotifications(ButtonCharacteristic.buttonAState);
+        await this.startNotifications(ButtonCharacteristic.buttonBState);
 
         this.on("newListener", this.onNewListener.bind(this));
         this.on("removeListener", this.onRemoveListener.bind(this));
@@ -92,6 +90,11 @@ export class ButtonService extends (EventDispatcher as new() => TypedDispatcher<
         const service = await this.service;
         const char = await service.getCharacteristic(characteristic);
         return await char.readValue();
+    }
+
+    private async startNotifications(characteristic: BluetoothCharacteristicUUID) {
+        const char = await this.service.getCharacteristic(characteristic);
+        await char.startNotifications();
     }
 
     private async onNewListener(event: keyof ButtonEvents): Promise<void> {

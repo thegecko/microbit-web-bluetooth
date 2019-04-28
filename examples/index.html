@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>micro:bit</title>
-        <script type="text/javascript" src="../bundles/microbit.bundle.js"></script>
+        <script type="text/javascript" src="../dist/microbit.umd.js"></script>
     </head>
     <body>
         <button id="find">find</button>
@@ -10,14 +10,14 @@
                 const device = await microbit.requestMicrobit(window.navigator.bluetooth);
                 if (device) {
                     const services = await microbit.getServices(device);
-/*
+
                     if (services.deviceInformationService) {
                         console.log(await services.deviceInformationService.readDeviceInformation());
                     }
 
                     if (services.ledService) {
                         await services.ledService.setScrollingDelay(50);
-                        await services.ledService.writeText("Web BLE");
+                        // await services.ledService.writeText("Web BLE");
                         await services.ledService.setMatrixState([
                             [1, 0, 1, 0, 0],
                             [1, 1, 1, 1, 1],
@@ -45,17 +45,15 @@
                         const accelerometerHandler = data => console.log(data.detail);
                         services.accelerometerService.addEventListener("accelerometerdatachanged", accelerometerHandler);
                     }
-*/
+
                     if (services.magnetometerService) {
-                        const magnetometerHandler = data => console.log(data.detail);
-                        services.magnetometerService.addEventListener("magnetometercalibrationchanged", magnetometerHandler);
-                        await services.magnetometerService.calibrate();
+                        // await services.magnetometerService.calibrate();
                         // await services.magnetometerService.setMagnetometerPeriod(100);
-                        /*
-                        console.log(await services.magnetometerService.getMagnetometerPeriod());
+                        // console.log(await services.magnetometerService.getMagnetometerPeriod());
+                        const magnetometerHandler = data => console.log(data.detail);
                         services.magnetometerService.addEventListener("magnetometerdatachanged", magnetometerHandler);
                         services.magnetometerService.addEventListener("magnetometerbearingchanged", magnetometerHandler);
-                        */
+                        services.magnetometerService.addEventListener("magnetometercalibrationchanged", magnetometerHandler);
                     }
                 }
             }

@@ -70,8 +70,7 @@ export class AccelerometerService extends (EventDispatcher as new() => TypedDisp
     }
 
     private async init() {
-        const char = await this.service.getCharacteristic(AccelerometerCharacteristic.accelerometerData);
-        await char.startNotifications();
+        await this.startNotifications(AccelerometerCharacteristic.accelerometerData);
 
         this.on("newListener", this.onNewListener.bind(this));
         this.on("removeListener", this.onRemoveListener.bind(this));
@@ -97,6 +96,11 @@ export class AccelerometerService extends (EventDispatcher as new() => TypedDisp
     private async getCharacteristValue(characteristic: BluetoothCharacteristicUUID): Promise<DataView> {
         const char = await this.service.getCharacteristic(characteristic);
         return await char.readValue();
+    }
+
+    private async startNotifications(characteristic: BluetoothCharacteristicUUID) {
+        const char = await this.service.getCharacteristic(characteristic);
+        await char.startNotifications();
     }
 
     private async onNewListener(event: keyof AccelerometerEvents): Promise<void> {

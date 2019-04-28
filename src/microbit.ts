@@ -78,16 +78,21 @@ export const getServices = async (device: BluetoothDevice): Promise<Services> =>
     }
 
     const services = await device.gatt.getPrimaryServices();
+    const deviceInformationService = await DeviceInformationService.createService(services);
+    const buttonService = await ButtonService.createService(services);
+    const ledService = await LedService.createService(services);
+    const temperatureService = await TemperatureService.createService(services);
+    const accelerometerService = await AccelerometerService.createService(services);
+    const magnetometerService = await MagnetometerService.createService(services);
+    const eventService = await EventService.createService(services);
 
-    const microbitServices: Services = {
-        deviceInformationService: await DeviceInformationService.createService(services),
-        buttonService: await ButtonService.createService(services),
-        ledService: await LedService.createService(services),
-        temperatureService: await TemperatureService.createService(services),
-        accelerometerService: await AccelerometerService.createService(services),
-        magnetometerService: await MagnetometerService.createService(services),
-        eventService: await EventService.createService(services)
+    return {
+        deviceInformationService,
+        buttonService,
+        ledService,
+        temperatureService,
+        accelerometerService,
+        magnetometerService,
+        eventService,
     };
-
-    return microbitServices;
 };
