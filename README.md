@@ -49,10 +49,10 @@ Refer to the [micro:bit Web Bluetooth API Documentation](https://thegecko.github
 ### Magnetometer Service
 - [x] Magnetometer Data
 - [x] Magnetometer Data Changed Event
-- [ ] Magnetometer Period
+- [x] Magnetometer Period
 - [x] Magnetometer Bearing
 - [x] Magnetometer Bearing Changed Event
-- [ ] Magnetometer Calibration
+- [x] Magnetometer Calibration
 
 ### IO Pin Service
 - [ ] Pin Data
@@ -62,8 +62,10 @@ Refer to the [micro:bit Web Bluetooth API Documentation](https://thegecko.github
 - [ ] PWM Control
 
 ### UART Service
-- [ ] TX
-- [ ] RX
+- [x] Send
+- [x] Receive Event
+- [x] SendString
+- [x] ReceiveString Event
 
 ### Event Service
 - [x] MicroBit Requirements

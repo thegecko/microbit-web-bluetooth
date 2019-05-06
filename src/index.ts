@@ -23,4 +23,79 @@
 * SOFTWARE.
 */
 
-export * from "./microbit";
+import { DeviceInformationUuid, DeviceInformationService } from "./services/device-information";
+import { ButtonUuid, ButtonService } from "./services/button";
+import { LedUuid, LedService } from "./services/led";
+import { TemperatureUuid, TemperatureService } from "./services/temperature";
+import { AccelerometerUuid, AccelerometerService } from "./services/accelerometer";
+import { MagnetometerUuid, MagnetometerService } from "./services/magnetometer";
+import { IoPinUuid } from "./services/io-pin";
+import { UartUuid, UartService } from "./services/uart";
+import { EventUuid, EventService } from "./services/event";
+import { DfuUuid } from "./services/dfu-control";
+
+export interface Services {
+    deviceInformationService?: DeviceInformationService;
+    buttonService?: ButtonService;
+    ledService?: LedService;
+    temperatureService?: TemperatureService;
+    accelerometerService?: AccelerometerService;
+    magnetometerService?: MagnetometerService;
+    uartService?: UartService;
+    eventService?: EventService;
+}
+
+export const requestMicrobit = async (bluetooth: Bluetooth): Promise<BluetoothDevice | undefined> => {
+    const device = await bluetooth.requestDevice({
+        filters: [
+            {
+                namePrefix: "BBC micro:bit"
+            }
+        ],
+        optionalServices: [
+            DeviceInformationUuid,
+            ButtonUuid,
+            LedUuid,
+            TemperatureUuid,
+            AccelerometerUuid,
+            MagnetometerUuid,
+            IoPinUuid,
+            UartUuid,
+            EventUuid,
+            DfuUuid
+        ]
+    });
+
+    return device;
+};
+
+export const getServices = async (device: BluetoothDevice): Promise<Services> => {
+    if (!device || !device.gatt) {
+        return {};
+    }
+
+    if (!device.gatt.connected) {
+        await device.gatt.connect();
+    }
+
+    const services = await device.gatt.getPrimaryServices();
+    const deviceInformationService = await DeviceInformationService.createService(services);
+    const buttonService = await ButtonService.createService(services);
+    const ledService = await LedService.createService(services);
+    const temperatureService = await TemperatureService.createService(services);
+    const accelerometerService = await AccelerometerService.createService(services);
+    const magnetometerService = await MagnetometerService.createService(services);
+    const uartService = await UartService.createService(services);
+    const eventService = await EventService.createService(services);
+
+    return {
+        deviceInformationService,
+        buttonService,
+        ledService,
+        temperatureService,
+        accelerometerService,
+        magnetometerService,
+        uartService,
+        eventService,
+    };
+};

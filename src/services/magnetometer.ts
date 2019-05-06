@@ -95,9 +95,7 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
             throw new Error("Unable to locate calibration characteristic");
         }
 
-        const view = new DataView(new ArrayBuffer(1));
-        view.setUint8(0, 1);
-        return char.writeValue(view);
+        return char.writeValue(new Uint8Array([1]));
     }
 
     public async readMagnetometerData(): Promise<MagnetometerData> {
@@ -227,7 +225,7 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
     private magnetometerCalibrationChangedHandler(event: Event) {
         const view = (event.target as BluetoothRemoteGATTCharacteristic).value!;
         if (view.byteLength === 1) {
-            this.dispatchEvent("magnetometerbearingchanged", view.getUint8(0) as MagnetometerCalibration);
+            this.dispatchEvent("magnetometercalibrationchanged", view.getUint8(0) as MagnetometerCalibration);
         }
     }
 

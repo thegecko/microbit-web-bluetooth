@@ -15,9 +15,14 @@
                         console.log(await services.deviceInformationService.readDeviceInformation());
                     }
 
+                    if (services.uartService) {
+                        const uartHandler = data => console.log(data.detail);
+                        services.uartService.addEventListener("receiveString", uartHandler);
+                        await services.uartService.send(new Uint8Array([104, 101, 108, 108, 111, 58])); // hello:
+                    }
+
                     if (services.ledService) {
                         await services.ledService.setScrollingDelay(50);
-                        // await services.ledService.writeText("Web BLE");
                         await services.ledService.setMatrixState([
                             [1, 0, 1, 0, 0],
                             [1, 1, 1, 1, 1],
@@ -26,6 +31,7 @@
                             [1, 0, 0, 0, 1]
                         ]);
                         console.log(await services.ledService.getMatrixState());
+                        await services.ledService.writeText("Web BLE");
                     }
 
                     if (services.buttonService) {
@@ -47,13 +53,25 @@
                     }
 
                     if (services.magnetometerService) {
-                        // await services.magnetometerService.calibrate();
-                        // await services.magnetometerService.setMagnetometerPeriod(100);
-                        // console.log(await services.magnetometerService.getMagnetometerPeriod());
-                        const magnetometerHandler = data => console.log(data.detail);
-                        services.magnetometerService.addEventListener("magnetometerdatachanged", magnetometerHandler);
-                        services.magnetometerService.addEventListener("magnetometerbearingchanged", magnetometerHandler);
-                        services.magnetometerService.addEventListener("magnetometercalibrationchanged", magnetometerHandler);
+                        const startMagnetometer = async () => {
+                            await services.magnetometerService.setMagnetometerPeriod(80);
+                            console.log(await services.magnetometerService.getMagnetometerPeriod());
+                            const magnetometerHandler = data => console.log(data.detail);
+                            services.magnetometerService.addEventListener("magnetometerdatachanged", magnetometerHandler);
+                            services.magnetometerService.addEventListener("magnetometerbearingchanged", magnetometerHandler);
+                        };
+
+                        services.magnetometerService.addEventListener("magnetometercalibrationchanged", async response => {
+                            if (response.detail === 2) {
+                                await startMagnetometer();
+                            }
+                        });
+
+                        try {
+                            await services.magnetometerService.calibrate();
+                        } catch (e) {
+                            await startMagnetometer();
+                        }
                     }
                 }
             }
