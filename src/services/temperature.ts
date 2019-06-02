@@ -24,11 +24,7 @@
 */
 
 import { TypedDispatcher, EventDispatcher } from "../event-dispatcher";
-
-/**
- * @hidden
- */
-export const TemperatureUuid = "e95d6100-251d-470a-a062-fa1922dfa9a8";
+import { ServiceHelper } from "../service-helper";
 
 /**
  * @hidden
@@ -46,79 +42,45 @@ export interface TemperatureEvents {
 
 export class TemperatureService extends (EventDispatcher as new() => TypedDispatcher<TemperatureEvents>) {
 
-    public static async createService(services: BluetoothRemoteGATTService[]): Promise<TemperatureService | undefined> {
-        const found = services.find(service => service.uuid === TemperatureUuid);
-        if (!found) {
-            return undefined;
-        }
+    /**
+     * @hidden
+     */
+    public static uuid = "e95d6100-251d-470a-a062-fa1922dfa9a8";
 
-        const temperatureService = new TemperatureService(found);
-        await temperatureService.init();
-        return temperatureService;
+    /**
+     * @hidden
+     */
+    public static async create(service: BluetoothRemoteGATTService): Promise<TemperatureService> {
+        const bluetoothService = new TemperatureService(service);
+        await bluetoothService.init();
+        return bluetoothService;
     }
 
-    constructor(private service: BluetoothRemoteGATTService) {
+    private helper: ServiceHelper;
+
+    constructor(service: BluetoothRemoteGATTService) {
         super();
+        this.helper = new ServiceHelper(service, this);
     }
 
     private async init() {
-        await this.startNotifications(TemperatureCharacteristic.temperature);
-
-        this.on("newListener", this.onNewListener.bind(this));
-        this.on("removeListener", this.onRemoveListener.bind(this));
+        await this.helper.handleListener("temperaturechanged", TemperatureCharacteristic.temperature, this.temperatureChangedHandler.bind(this));
     }
 
     public async readTemperature(): Promise<number> {
-        const value = await this.getCharacteristValue(TemperatureCharacteristic.temperature);
+        const value = await this.helper.getCharacteristicValue(TemperatureCharacteristic.temperature);
         return value.getInt8(0);
     }
 
     public async getTemperaturePeriod(): Promise<number> {
-        const value = await this.getCharacteristValue(TemperatureCharacteristic.temperaturePeriod);
+        const value = await this.helper.getCharacteristicValue(TemperatureCharacteristic.temperaturePeriod);
         return value.getUint16(0, true);
     }
 
     public async setTemperaturePeriod(frequency: number): Promise<void> {
-        const char = await this.service.getCharacteristic(TemperatureCharacteristic.temperaturePeriod);
         const view = new DataView(new ArrayBuffer(2));
         view.setUint16(0, frequency, true);
-        return char.writeValue(view);
-    }
-
-    private async getCharacteristValue(characteristic: BluetoothCharacteristicUUID): Promise<DataView> {
-        const char = await this.service.getCharacteristic(characteristic);
-        return await char.readValue();
-    }
-
-    private async startNotifications(characteristic: BluetoothCharacteristicUUID) {
-        const char = await this.service.getCharacteristic(characteristic);
-        await char.startNotifications();
-    }
-
-    private async onNewListener(event: keyof TemperatureEvents): Promise<void> {
-        const listenerCount = this.listenerCount(event);
-
-        if (listenerCount > 0) {
-            return;
-        }
-
-        if (event === "temperaturechanged") {
-            const char = await this.service.getCharacteristic(TemperatureCharacteristic.temperature);
-            char.addEventListener("characteristicvaluechanged", this.temperatureChangedHandler.bind(this));
-        }
-    }
-
-    private async onRemoveListener(event: keyof TemperatureEvents) {
-        const listenerCount = this.listenerCount(event);
-
-        if (listenerCount > 0) {
-            return;
-        }
-
-        if (event === "temperaturechanged") {
-            const char = await this.service.getCharacteristic(TemperatureCharacteristic.temperature);
-            char.removeEventListener("characteristicvaluechanged", this.temperatureChangedHandler.bind(this));
-        }
+        return await this.helper.setCharacteristicValue(TemperatureCharacteristic.temperaturePeriod, view);
     }
 
     private temperatureChangedHandler(event: Event) {

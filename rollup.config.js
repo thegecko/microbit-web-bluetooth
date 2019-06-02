@@ -8,7 +8,7 @@ import serve from "rollup-plugin-serve";
 import livereload from "rollup-plugin-livereload";
 
 const name = "microbit";
-const pkg = require('./package.json')
+const pkg = require('./package.json');
 const watch = process.env.ROLLUP_WATCH;
 
 export default {

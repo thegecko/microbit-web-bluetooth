@@ -24,11 +24,7 @@
 */
 
 import { EventDispatcher, TypedDispatcher } from "../event-dispatcher";
-
-/**
- * @hidden
- */
-export const ButtonUuid = "e95d9882-251d-470a-a062-fa1922dfa9a8";
+import { ServiceHelper } from "../service-helper";
 
 /**
  * @hidden
@@ -53,88 +49,40 @@ export interface ButtonEvents {
 
 export class ButtonService extends (EventDispatcher as new() => TypedDispatcher<ButtonEvents>) {
 
-    public static async createService(services: BluetoothRemoteGATTService[]): Promise<ButtonService | undefined> {
-        const found = services.find(service => service.uuid === ButtonUuid);
-        if (!found) {
-            return undefined;
-        }
+    /**
+     * @hidden
+     */
+    public static uuid = "e95d9882-251d-470a-a062-fa1922dfa9a8";
 
-        const buttonService = new ButtonService(found);
-        await buttonService.init();
-        return buttonService;
+    /**
+     * @hidden
+     */
+    public static async create(service: BluetoothRemoteGATTService): Promise<ButtonService> {
+        const bluetoothService = new ButtonService(service);
+        await bluetoothService.init();
+        return bluetoothService;
     }
 
-    constructor(private service: BluetoothRemoteGATTService) {
+    private helper: ServiceHelper;
+
+    constructor(service: BluetoothRemoteGATTService) {
         super();
+        this.helper = new ServiceHelper(service, this);
     }
 
     private async init() {
-        await this.startNotifications(ButtonCharacteristic.buttonAState);
-        await this.startNotifications(ButtonCharacteristic.buttonBState);
-
-        this.on("newListener", this.onNewListener.bind(this));
-        this.on("removeListener", this.onRemoveListener.bind(this));
+        await this.helper.handleListener("buttonastatechanged", ButtonCharacteristic.buttonAState, this.buttonAStateChangedHandler.bind(this));
+        await this.helper.handleListener("buttonbstatechanged", ButtonCharacteristic.buttonBState, this.buttonBStateChangedHandler.bind(this));
     }
 
     public async readButtonAState(): Promise<ButtonState> {
-        const value = await this.getCharacteristValue(ButtonCharacteristic.buttonAState);
+        const value = await this.helper.getCharacteristicValue(ButtonCharacteristic.buttonAState);
         return value.getUint8(0);
     }
 
     public async readButtonBState(): Promise<ButtonState> {
-        const value = await this.getCharacteristValue(ButtonCharacteristic.buttonBState);
+        const value = await this.helper.getCharacteristicValue(ButtonCharacteristic.buttonBState);
         return value.getUint8(0);
-    }
-
-    private async getCharacteristValue(characteristic: BluetoothCharacteristicUUID): Promise<DataView> {
-        const service = await this.service;
-        const char = await service.getCharacteristic(characteristic);
-        return await char.readValue();
-    }
-
-    private async startNotifications(characteristic: BluetoothCharacteristicUUID) {
-        const char = await this.service.getCharacteristic(characteristic);
-        await char.startNotifications();
-    }
-
-    private async onNewListener(event: keyof ButtonEvents): Promise<void> {
-        const listenerCount = this.listenerCount(event);
-
-        if (listenerCount > 0) {
-            return;
-        }
-
-        if (event === "buttonastatechanged") {
-            const char = await this.service.getCharacteristic(ButtonCharacteristic.buttonAState);
-            char.addEventListener("characteristicvaluechanged", this.buttonAStateChangedHandler.bind(this));
-        }
-
-        if (event === "buttonbstatechanged") {
-            const char = await this.service.getCharacteristic(ButtonCharacteristic.buttonBState);
-            char.addEventListener("characteristicvaluechanged", this.buttonBStateChangedHandler.bind(this));
-        }
-    }
-
-    private async onRemoveListener(event: keyof ButtonEvents) {
-        const listenerCount = this.listenerCount(event);
-
-        if (listenerCount > 0) {
-            return;
-        }
-
-        if (event === "buttonastatechanged") {
-            const service = await this.service;
-            const char = await service.getCharacteristic(ButtonCharacteristic.buttonAState);
-            char.removeEventListener("characteristicvaluechanged", this.buttonAStateChangedHandler.bind(this));
-            await char.stopNotifications();
-        }
-
-        if (event === "buttonbstatechanged") {
-            const service = await this.service;
-            const char = await service.getCharacteristic(ButtonCharacteristic.buttonBState);
-            char.removeEventListener("characteristicvaluechanged", this.buttonBStateChangedHandler.bind(this));
-            await char.stopNotifications();
-        }
     }
 
     private buttonAStateChangedHandler(event: Event) {

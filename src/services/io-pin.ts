@@ -23,10 +23,7 @@
 * SOFTWARE.
 */
 
-/**
- * @hidden
- */
-export const IoPinUuid = "e95d127b-251d-470a-a062-fa1922dfa9a8";
+import { ServiceHelper } from "../service-helper";
 
 /**
  * @hidden
@@ -36,4 +33,25 @@ export enum IoPinCharacteristic {
     pinAdConfiguration = "e95d5899-251d-470a-a062-fa1922dfa9a8",
     pinIoConfiguration = "e95db9fe-251d-470a-a062-fa1922dfa9a8",
     pwmControl = "e95dd822-251d-470a-a062-fa1922dfa9a8"
+}
+
+export class IoPinService {
+
+    /**
+     * @hidden
+     */
+    public static uuid = "e95d127b-251d-470a-a062-fa1922dfa9a8";
+
+    /**
+     * @hidden
+     */
+    public static async create(service: BluetoothRemoteGATTService): Promise<IoPinService> {
+        return new IoPinService(service);
+    }
+
+    public helper: ServiceHelper;
+
+    constructor(service: BluetoothRemoteGATTService) {
+        this.helper = new ServiceHelper(service);
+    }
 }

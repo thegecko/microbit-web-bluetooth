@@ -46,6 +46,8 @@ export interface TypedDispatcher<T> {
     // tslint:disable-next-line:array-type
     eventNames<K extends keyof T>(): Array<K>;
     listenerCount<K extends keyof T>(type: K): number;
+    setMaxListeners(n: number): this;
+    getMaxListeners(): number;
 }
 
 /**

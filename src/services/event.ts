@@ -24,11 +24,7 @@
 */
 
 import { EventDispatcher, TypedDispatcher } from "../event-dispatcher";
-
-/**
- * @hidden
- */
-export const EventUuid = "e95d93af-251d-470a-a062-fa1922dfa9a8";
+import { ServiceHelper } from "../service-helper";
 
 /**
  * @hidden
@@ -54,99 +50,54 @@ export interface MicrobitEvents {
 
 export class EventService extends (EventDispatcher as new() => TypedDispatcher<MicrobitEvents>) {
 
-    public static async createService(services: BluetoothRemoteGATTService[]): Promise<EventService | undefined> {
-        const found = services.find(service => service.uuid === EventUuid);
-        if (!found) {
-            return undefined;
-        }
+    /**
+     * @hidden
+     */
+    public static uuid = "e95d93af-251d-470a-a062-fa1922dfa9a8";
 
-        const eventService = new EventService(found);
-        await eventService.init();
-        return eventService;
+    /**
+     * @hidden
+     */
+    public static async create(service: BluetoothRemoteGATTService): Promise<EventService> {
+        const bluetoothService = new EventService(service);
+        await bluetoothService.init();
+        return bluetoothService;
     }
 
-    constructor(private service: BluetoothRemoteGATTService) {
+    private helper: ServiceHelper;
+
+    constructor(service: BluetoothRemoteGATTService) {
         super();
+        this.helper = new ServiceHelper(service, this);
     }
 
     private async init() {
-        await this.startNotifications(EventCharacteristic.microBitEvent);
-        await this.startNotifications(EventCharacteristic.microBitRequirements);
-
-        this.on("newListener", this.onNewListener.bind(this));
-        this.on("removeListener", this.onRemoveListener.bind(this));
+        await this.helper.handleListener("microbitevent", EventCharacteristic.microBitEvent, this.eventHandler.bind(this));
+        await this.helper.handleListener("microbitrequirementschanged", EventCharacteristic.microBitRequirements, this.microbitRequirementsChangedHandler.bind(this));
     }
 
     public async getMicrobitRequirements(): Promise<MicrobitEvent> {
-        const value = await this.getCharacteristValue(EventCharacteristic.microBitRequirements);
+        const value = await this.helper.getCharacteristicValue(EventCharacteristic.microBitRequirements);
         return this.viewToMicrobitEvent(value);
     }
 
     public async setClientRequirements(type: number, value: number): Promise<void> {
-        const char = await this.service.getCharacteristic(EventCharacteristic.clientRequirements);
         const view = new DataView(new ArrayBuffer(4));
         view.setUint16(0, type, true);
         view.setUint16(1, value, true);
-        return char.writeValue(view);
+        return await this.helper.setCharacteristicValue(EventCharacteristic.clientRequirements, view);
     }
 
     public async readMicrobitEvent(): Promise<MicrobitEvent> {
-        const value = await this.getCharacteristValue(EventCharacteristic.microBitEvent);
+        const value = await this.helper.getCharacteristicValue(EventCharacteristic.microBitEvent);
         return this.viewToMicrobitEvent(value);
     }
 
     public async writeClientEvent(type: number, value: number): Promise<void> {
-        const char = await this.service.getCharacteristic(EventCharacteristic.clientEvent);
         const view = new DataView(new ArrayBuffer(4));
         view.setUint16(0, type, true);
         view.setUint16(1, value, true);
-        return char.writeValue(view);
-    }
-
-    private async getCharacteristValue(characteristic: BluetoothCharacteristicUUID): Promise<DataView> {
-        const char = await this.service.getCharacteristic(characteristic);
-        return await char.readValue();
-    }
-
-    private async startNotifications(characteristic: BluetoothCharacteristicUUID) {
-        const char = await this.service.getCharacteristic(characteristic);
-        await char.startNotifications();
-    }
-
-    private async onNewListener(event: keyof MicrobitEvents): Promise<void> {
-        const listenerCount = this.listenerCount(event);
-
-        if (listenerCount > 0) {
-            return;
-        }
-
-        if (event === "microbitevent") {
-            const char = await this.service.getCharacteristic(EventCharacteristic.microBitEvent);
-            char.addEventListener("characteristicvaluechanged", this.eventHandler.bind(this));
-        }
-
-        if (event === "microbitrequirementschanged") {
-            const char = await this.service.getCharacteristic(EventCharacteristic.microBitRequirements);
-            char.addEventListener("characteristicvaluechanged", this.microbitRequirementsChangedHandler.bind(this));
-        }
-    }
-
-    private async onRemoveListener(event: keyof MicrobitEvents) {
-        const listenerCount = this.listenerCount(event);
-
-        if (listenerCount > 0) {
-            return;
-        }
-
-        if (event === "microbitevent") {
-            const char = await this.service.getCharacteristic(EventCharacteristic.microBitEvent);
-            char.removeEventListener("characteristicvaluechanged", this.eventHandler.bind(this));
-        }
-
-        if (event === "microbitrequirementschanged") {
-            const char = await this.service.getCharacteristic(EventCharacteristic.microBitRequirements);
-            char.removeEventListener("characteristicvaluechanged", this.microbitRequirementsChangedHandler.bind(this));
-        }
+        return await this.helper.setCharacteristicValue(EventCharacteristic.clientEvent, view);
     }
 
     private microbitRequirementsChangedHandler(event: Event) {

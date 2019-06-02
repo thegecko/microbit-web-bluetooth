@@ -24,11 +24,7 @@
 */
 
 import { EventDispatcher, TypedDispatcher } from "../event-dispatcher";
-
-/**
- * @hidden
- */
-export const MagnetometerUuid = "e95df2d8-251d-470a-a062-fa1922dfa9a8";
+import { ServiceHelper } from "../service-helper";
 
 /**
  * @hidden
@@ -65,46 +61,44 @@ export interface MagnetometerEvents {
 
 export class MagnetometerService extends (EventDispatcher as new() => TypedDispatcher<MagnetometerEvents>) {
 
-    public static async createService(services: BluetoothRemoteGATTService[]): Promise<MagnetometerService | undefined> {
-        const found = services.find(service => service.uuid === MagnetometerUuid);
-        if (!found) {
-            return undefined;
-        }
+    /**
+     * @hidden
+     */
+    public static uuid = "e95df2d8-251d-470a-a062-fa1922dfa9a8";
 
-        const magnetometerService = new MagnetometerService(found);
-        await magnetometerService.init();
-        return magnetometerService;
+    /**
+     * @hidden
+     */
+    public static async create(service: BluetoothRemoteGATTService): Promise<MagnetometerService> {
+        const bluetoothService = new MagnetometerService(service);
+        await bluetoothService.init();
+        return bluetoothService;
     }
 
-    constructor(private service: BluetoothRemoteGATTService) {
+    private helper: ServiceHelper;
+
+    constructor(service: BluetoothRemoteGATTService) {
         super();
+        this.helper = new ServiceHelper(service, this);
     }
 
     private async init() {
-        await this.startNotifications(MagnetometerCharacteristic.magnetometerData);
-        await this.startNotifications(MagnetometerCharacteristic.magnetometerBearing);
-        await this.startNotifications(MagnetometerCharacteristic.magnetometerCalibration);
-
-        this.on("newListener", this.onNewListener.bind(this));
-        this.on("removeListener", this.onRemoveListener.bind(this));
+        await this.helper.handleListener("magnetometerdatachanged", MagnetometerCharacteristic.magnetometerData, this.magnetometerDataChangedHandler.bind(this));
+        await this.helper.handleListener("magnetometerbearingchanged", MagnetometerCharacteristic.magnetometerBearing, this.magnetometerBearingChangedHandler.bind(this));
+        await this.helper.handleListener("magnetometercalibrationchanged", MagnetometerCharacteristic.magnetometerCalibration, this.magnetometerCalibrationChangedHandler.bind(this));
     }
 
     public async calibrate() {
-        const char = await this.getCharacteristic(MagnetometerCharacteristic.magnetometerCalibration);
-        if (!char) {
-            throw new Error("Unable to locate calibration characteristic");
-        }
-
-        return char.writeValue(new Uint8Array([1]));
+        return this.helper.setCharacteristicValue(MagnetometerCharacteristic.magnetometerCalibration, new Uint8Array([1]));
     }
 
     public async readMagnetometerData(): Promise<MagnetometerData> {
-        const view = await this.getCharacteristValue(MagnetometerCharacteristic.magnetometerData);
+        const view = await this.helper.getCharacteristicValue(MagnetometerCharacteristic.magnetometerData);
         return this.dataViewToMagnetometerData(view);
     }
 
     public async getMagnetometerBearing(): Promise<number | undefined> {
-        const view = await this.getCharacteristValue(MagnetometerCharacteristic.magnetometerBearing);
+        const view = await this.helper.getCharacteristicValue(MagnetometerCharacteristic.magnetometerBearing);
         if (view.byteLength === 2) {
             return view.getUint16(0, true);
         }
@@ -112,101 +106,14 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
     }
 
     public async getMagnetometerPeriod(): Promise<MagnetometerPeriod> {
-        const value = await this.getCharacteristValue(MagnetometerCharacteristic.magnetometerPeriod);
+        const value = await this.helper.getCharacteristicValue(MagnetometerCharacteristic.magnetometerPeriod);
         return value.getUint16(0, true) as MagnetometerPeriod;
     }
 
     public async setMagnetometerPeriod(frequency: MagnetometerPeriod): Promise<void> {
-        const char = await this.getCharacteristic(MagnetometerCharacteristic.magnetometerPeriod);
-        if (!char) {
-            throw new Error("Unable to locate period characteristic");
-        }
-
         const view = new DataView(new ArrayBuffer(2));
         view.setUint16(0, frequency, true);
-        return char.writeValue(view);
-    }
-
-    private async getCharacteristic(characteristic: BluetoothCharacteristicUUID): Promise<BluetoothRemoteGATTCharacteristic | undefined> {
-        try {
-            return await this.service.getCharacteristic(characteristic);
-        } catch (e) {
-            return undefined;
-        }
-    }
-
-    private async getCharacteristValue(characteristic: BluetoothCharacteristicUUID): Promise<DataView> {
-        const char = await this.getCharacteristic(characteristic);
-        if (!char) {
-            throw new Error("Unable to locate characteristic");
-        }
-
-        return await char.readValue();
-    }
-
-    private async startNotifications(characteristic: BluetoothCharacteristicUUID) {
-        const char = await this.getCharacteristic(characteristic);
-        if (char) {
-            await char.startNotifications();
-        }
-    }
-
-    private async onNewListener(event: keyof MagnetometerEvents): Promise<void> {
-        const listenerCount = this.listenerCount(event);
-
-        if (listenerCount > 0) {
-            return;
-        }
-
-        if (event === "magnetometerdatachanged") {
-            const char = await this.getCharacteristic(MagnetometerCharacteristic.magnetometerData);
-            if (char) {
-                char.addEventListener("characteristicvaluechanged", this.magnetometerDataChangedHandler.bind(this));
-            }
-        }
-
-        if (event === "magnetometerbearingchanged") {
-            const char = await this.getCharacteristic(MagnetometerCharacteristic.magnetometerBearing);
-            if (char) {
-                char.addEventListener("characteristicvaluechanged", this.magnetometerBearingChangedHandler.bind(this));
-            }
-        }
-
-        if (event === "magnetometercalibrationchanged") {
-            const char = await this.getCharacteristic(MagnetometerCharacteristic.magnetometerCalibration);
-            if (char) {
-                char.addEventListener("characteristicvaluechanged", this.magnetometerCalibrationChangedHandler.bind(this));
-            }
-        }
-    }
-
-    private async onRemoveListener(event: keyof MagnetometerEvents) {
-        const listenerCount = this.listenerCount(event);
-
-        if (listenerCount > 0) {
-            return;
-        }
-
-        if (event === "magnetometerdatachanged") {
-            const char = await this.getCharacteristic(MagnetometerCharacteristic.magnetometerData);
-            if (char) {
-                char.removeEventListener("characteristicvaluechanged", this.magnetometerDataChangedHandler.bind(this));
-            }
-        }
-
-        if (event === "magnetometerbearingchanged") {
-            const char = await this.getCharacteristic(MagnetometerCharacteristic.magnetometerBearing);
-            if (char) {
-                char.removeEventListener("characteristicvaluechanged", this.magnetometerBearingChangedHandler.bind(this));
-            }
-        }
-
-        if (event === "magnetometercalibrationchanged") {
-            const char = await this.getCharacteristic(MagnetometerCharacteristic.magnetometerCalibration);
-            if (char) {
-                char.removeEventListener("characteristicvaluechanged", this.magnetometerCalibrationChangedHandler.bind(this));
-            }
-        }
+        return this.helper.setCharacteristicValue(MagnetometerCharacteristic.magnetometerPeriod, view);
     }
 
     private magnetometerDataChangedHandler(event: Event) {

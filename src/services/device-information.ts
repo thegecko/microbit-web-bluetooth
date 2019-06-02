@@ -23,10 +23,7 @@
 * SOFTWARE.
 */
 
-/**
- * @hidden
- */
-export const DeviceInformationUuid = "0000180a-0000-1000-8000-00805f9b34fb";
+import { ServiceHelper } from "../service-helper";
 
 /**
  * @hidden
@@ -49,38 +46,52 @@ export interface DeviceInformation {
 
 export class DeviceInformationService {
 
-    public static createService(services: BluetoothRemoteGATTService[]): DeviceInformationService | undefined {
-        const found = services.find(service => service.uuid === DeviceInformationUuid);
-        if (found) {
-            return new DeviceInformationService(found);
-        }
-        return undefined;
+    /**
+     * @hidden
+     */
+    public static uuid = "0000180a-0000-1000-8000-00805f9b34fb";
+
+    /**
+     * @hidden
+     */
+    public static async create(service: BluetoothRemoteGATTService): Promise<DeviceInformationService> {
+        return new DeviceInformationService(service);
     }
 
-    constructor(private service: BluetoothRemoteGATTService) {
+    private helper: ServiceHelper;
+
+    constructor(service: BluetoothRemoteGATTService) {
+        this.helper = new ServiceHelper(service);
     }
 
     public async readDeviceInformation(): Promise<DeviceInformation> {
-        const characteristics = await this.service.getCharacteristics();
         const info: DeviceInformation = {};
 
-        const modelNumberChar = characteristics.find(char => char.uuid === DeviceInformationCharacteristic.modelNumber);
-        if (modelNumberChar) info.modelNumber = await this.readStringCharacteristic(modelNumberChar);
-        const serialNumberChar = characteristics.find(char => char.uuid === DeviceInformationCharacteristic.serialNumber);
-        if (serialNumberChar) info.serialNumber = await this.readStringCharacteristic(serialNumberChar);
-        const firmwareRevisionChar = characteristics.find(char => char.uuid === DeviceInformationCharacteristic.firmwareRevision);
-        if (firmwareRevisionChar) info.firmwareRevision = await this.readStringCharacteristic(firmwareRevisionChar);
-        const hardwareRevisionChar = characteristics.find(char => char.uuid === DeviceInformationCharacteristic.hardwareRevision);
-        if (hardwareRevisionChar) info.hardwareRevision = await this.readStringCharacteristic(hardwareRevisionChar);
-        const manufacturerChar = characteristics.find(char => char.uuid === DeviceInformationCharacteristic.manufacturer);
-        if (manufacturerChar) info.manufacturer = await this.readStringCharacteristic(manufacturerChar);
+        const modelNumber = await this.readStringCharacteristic(DeviceInformationCharacteristic.modelNumber);
+        if (modelNumber) info.modelNumber = modelNumber;
+
+        const serialNumber = await this.readStringCharacteristic(DeviceInformationCharacteristic.serialNumber);
+        if (serialNumber) info.serialNumber = serialNumber;
+
+        const firmwareRevision = await this.readStringCharacteristic(DeviceInformationCharacteristic.firmwareRevision);
+        if (firmwareRevision) info.firmwareRevision = firmwareRevision;
+
+        const hardwareRevision = await this.readStringCharacteristic(DeviceInformationCharacteristic.hardwareRevision);
+        if (hardwareRevision) info.hardwareRevision = hardwareRevision;
+
+        const manufacturer = await this.readStringCharacteristic(DeviceInformationCharacteristic.manufacturer);
+        if (manufacturer) info.manufacturer = manufacturer;
 
         return info;
     }
 
-    private async readStringCharacteristic(characteristic: BluetoothRemoteGATTCharacteristic): Promise<string> {
-        const view = await characteristic.readValue();
-        const buffer = view.buffer.slice(view.byteOffset, view.byteOffset + view.byteLength);
-        return String.fromCharCode.apply(null, Array.from(new Uint8Array(buffer)));
+    private async readStringCharacteristic(uuid: BluetoothCharacteristicUUID): Promise<string | undefined> {
+        try {
+            const view = await this.helper.getCharacteristicValue(uuid);
+            const buffer = view.buffer.slice(view.byteOffset, view.byteOffset + view.byteLength);
+            return String.fromCharCode.apply(null, Array.from(new Uint8Array(buffer)));
+        } catch (_e) {
+            return undefined;
+        }
     }
 }

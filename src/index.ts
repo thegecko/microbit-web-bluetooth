@@ -23,16 +23,16 @@
 * SOFTWARE.
 */
 
-import { DeviceInformationUuid, DeviceInformationService } from "./services/device-information";
-import { ButtonUuid, ButtonService } from "./services/button";
-import { LedUuid, LedService } from "./services/led";
-import { TemperatureUuid, TemperatureService } from "./services/temperature";
-import { AccelerometerUuid, AccelerometerService } from "./services/accelerometer";
-import { MagnetometerUuid, MagnetometerService } from "./services/magnetometer";
-import { IoPinUuid } from "./services/io-pin";
-import { UartUuid, UartService } from "./services/uart";
-import { EventUuid, EventService } from "./services/event";
-import { DfuUuid } from "./services/dfu-control";
+import { DeviceInformationService } from "./services/device-information";
+import { ButtonService } from "./services/button";
+import { LedService } from "./services/led";
+import { TemperatureService } from "./services/temperature";
+import { AccelerometerService } from "./services/accelerometer";
+import { MagnetometerService } from "./services/magnetometer";
+import { IoPinService } from "./services/io-pin";
+import { UartService } from "./services/uart";
+import { EventService } from "./services/event";
+import { DfuControlService } from "./services/dfu-control";
 
 export interface Services {
     deviceInformationService?: DeviceInformationService;
@@ -45,6 +45,27 @@ export interface Services {
     eventService?: EventService;
 }
 
+interface Service {
+    uuid: BluetoothCharacteristicUUID;
+    create(service: BluetoothRemoteGATTService): Promise<any>;
+}
+
+class ServiceBuilder {
+
+    constructor(private services: BluetoothRemoteGATTService[]) {
+    }
+
+    public async createService<T>(serviceClass: (new (service: BluetoothRemoteGATTService) => T) & Service): Promise<T | undefined> {
+        const found = this.services.find(service => service.uuid === serviceClass.uuid);
+
+        if (!found) {
+            return undefined;
+        }
+
+        return await serviceClass.create(found);
+    }
+}
+
 export const requestMicrobit = async (bluetooth: Bluetooth): Promise<BluetoothDevice | undefined> => {
     const device = await bluetooth.requestDevice({
         filters: [
@@ -53,16 +74,16 @@ export const requestMicrobit = async (bluetooth: Bluetooth): Promise<BluetoothDe
             }
         ],
         optionalServices: [
-            DeviceInformationUuid,
-            ButtonUuid,
-            LedUuid,
-            TemperatureUuid,
-            AccelerometerUuid,
-            MagnetometerUuid,
-            IoPinUuid,
-            UartUuid,
-            EventUuid,
-            DfuUuid
+            DeviceInformationService.uuid,
+            ButtonService.uuid,
+            LedService.uuid,
+            TemperatureService.uuid,
+            AccelerometerService.uuid,
+            MagnetometerService.uuid,
+            IoPinService.uuid,
+            UartService.uuid,
+            EventService.uuid,
+            DfuControlService.uuid
         ]
     });
 
@@ -79,14 +100,16 @@ export const getServices = async (device: BluetoothDevice): Promise<Services> =>
     }
 
     const services = await device.gatt.getPrimaryServices();
-    const deviceInformationService = await DeviceInformationService.createService(services);
-    const buttonService = await ButtonService.createService(services);
-    const ledService = await LedService.createService(services);
-    const temperatureService = await TemperatureService.createService(services);
-    const accelerometerService = await AccelerometerService.createService(services);
-    const magnetometerService = await MagnetometerService.createService(services);
-    const uartService = await UartService.createService(services);
-    const eventService = await EventService.createService(services);
+    const builder = new ServiceBuilder(services);
+
+    const deviceInformationService = await builder.createService(DeviceInformationService);
+    const buttonService = await builder.createService(ButtonService);
+    const ledService = await builder.createService(LedService);
+    const temperatureService = await builder.createService(TemperatureService);
+    const accelerometerService = await builder.createService(AccelerometerService);
+    const magnetometerService = await builder.createService(MagnetometerService);
+    const uartService = await builder.createService(UartService);
+    const eventService = await builder.createService(EventService);
 
     return {
         deviceInformationService,

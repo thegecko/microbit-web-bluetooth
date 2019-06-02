@@ -54,13 +54,6 @@ Refer to the [micro:bit Web Bluetooth API Documentation](https://thegecko.github
 - [x] Magnetometer Bearing Changed Event
 - [x] Magnetometer Calibration
 
-### IO Pin Service
-- [ ] Pin Data
-- [ ] Pin Data Changed Event
-- [ ] Pin AD Configuration
-- [ ] Pin IO Configuration
-- [ ] PWM Control
-
 ### UART Service
 - [x] Send
 - [x] Receive Event
@@ -72,6 +65,13 @@ Refer to the [micro:bit Web Bluetooth API Documentation](https://thegecko.github
 - [x] MicroBit Event
 - [x] Client Requirements
 - [x] Client Event
+
+### IO Pin Service
+- [ ] Pin Data
+- [ ] Pin Data Changed Event
+- [ ] Pin AD Configuration
+- [ ] Pin IO Configuration
+- [ ] PWM Control
 
 ### DFU Control Service
 - [ ] DFU Control

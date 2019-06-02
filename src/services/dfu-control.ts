@@ -23,14 +23,32 @@
 * SOFTWARE.
 */
 
-/**
- * @hidden
- */
-export const DfuUuid = "e95d93b0-251d-470a-a062-fa1922dfa9a8";
+import { ServiceHelper } from "../service-helper";
 
 /**
  * @hidden
  */
 export enum DfuCharacteristic {
     dfuControl = "e95d93b1-251d-470a-a062-fa1922dfa9a8"
+}
+
+export class DfuControlService {
+
+    /**
+     * @hidden
+     */
+    public static uuid = "e95d93b0-251d-470a-a062-fa1922dfa9a8";
+
+    /**
+     * @hidden
+     */
+    public static async create(service: BluetoothRemoteGATTService): Promise<DfuControlService> {
+        return new DfuControlService(service);
+    }
+
+    public helper: ServiceHelper;
+
+    constructor(service: BluetoothRemoteGATTService) {
+        this.helper = new ServiceHelper(service);
+    }
 }

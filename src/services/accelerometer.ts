@@ -24,11 +24,7 @@
 */
 
 import { EventDispatcher, TypedDispatcher } from "../event-dispatcher";
-
-/**
- * @hidden
- */
-export const AccelerometerUuid = "e95d0753-251d-470a-a062-fa1922dfa9a8";
+import { ServiceHelper } from "../service-helper";
 
 /**
  * @hidden
@@ -54,79 +50,45 @@ export interface AccelerometerEvents {
 
 export class AccelerometerService extends (EventDispatcher as new() => TypedDispatcher<AccelerometerEvents>) {
 
-    public static async createService(services: BluetoothRemoteGATTService[]): Promise<AccelerometerService | undefined> {
-        const found = services.find(service => service.uuid === AccelerometerUuid);
-        if (!found) {
-            return undefined;
-        }
+    /**
+     * @hidden
+     */
+    public static uuid = "e95d0753-251d-470a-a062-fa1922dfa9a8";
 
-        const accelerometerService = new AccelerometerService(found);
-        await accelerometerService.init();
-        return accelerometerService;
+    /**
+     * @hidden
+     */
+    public static async create(service: BluetoothRemoteGATTService): Promise<AccelerometerService> {
+        const bluetoothService = new AccelerometerService(service);
+        await bluetoothService.init();
+        return bluetoothService;
     }
 
-    constructor(private service: BluetoothRemoteGATTService) {
+    private helper: ServiceHelper;
+
+    constructor(service: BluetoothRemoteGATTService) {
         super();
+        this.helper = new ServiceHelper(service, this);
     }
 
     private async init() {
-        await this.startNotifications(AccelerometerCharacteristic.accelerometerData);
-
-        this.on("newListener", this.onNewListener.bind(this));
-        this.on("removeListener", this.onRemoveListener.bind(this));
+        await this.helper.handleListener("accelerometerdatachanged", AccelerometerCharacteristic.accelerometerData, this.accelerometerDataChangedHandler.bind(this));
     }
 
     public async readAccelerometerData(): Promise<AccelerometerData> {
-        const view = await this.getCharacteristValue(AccelerometerCharacteristic.accelerometerData);
+        const view = await this.helper.getCharacteristicValue(AccelerometerCharacteristic.accelerometerData);
         return this.dataViewToAccelerometerData(view);
     }
 
     public async getAccelerometerPeriod(): Promise<AccelerometerPeriod> {
-        const value = await this.getCharacteristValue(AccelerometerCharacteristic.accelerometerPeriod);
+        const value = await this.helper.getCharacteristicValue(AccelerometerCharacteristic.accelerometerPeriod);
         return value.getUint16(0, true) as AccelerometerPeriod;
     }
 
     public async setAccelerometerPeriod(frequency: AccelerometerPeriod): Promise<void> {
-        const char = await this.service.getCharacteristic(AccelerometerCharacteristic.accelerometerPeriod);
         const view = new DataView(new ArrayBuffer(2));
         view.setUint16(0, frequency, true);
-        return char.writeValue(view);
-    }
-
-    private async getCharacteristValue(characteristic: BluetoothCharacteristicUUID): Promise<DataView> {
-        const char = await this.service.getCharacteristic(characteristic);
-        return await char.readValue();
-    }
-
-    private async startNotifications(characteristic: BluetoothCharacteristicUUID) {
-        const char = await this.service.getCharacteristic(characteristic);
-        await char.startNotifications();
-    }
-
-    private async onNewListener(event: keyof AccelerometerEvents): Promise<void> {
-        const listenerCount = this.listenerCount(event);
-
-        if (listenerCount > 0) {
-            return;
-        }
-
-        if (event === "accelerometerdatachanged") {
-            const char = await this.service.getCharacteristic(AccelerometerCharacteristic.accelerometerData);
-            char.addEventListener("characteristicvaluechanged", this.accelerometerDataChangedHandler.bind(this));
-        }
-    }
-
-    private async onRemoveListener(event: keyof AccelerometerEvents) {
-        const listenerCount = this.listenerCount(event);
-
-        if (listenerCount > 0) {
-            return;
-        }
-
-        if (event === "accelerometerdatachanged") {
-            const char = await this.service.getCharacteristic(AccelerometerCharacteristic.accelerometerData);
-            char.removeEventListener("characteristicvaluechanged", this.accelerometerDataChangedHandler.bind(this));
-        }
+        return this.helper.setCharacteristicValue(AccelerometerCharacteristic.accelerometerPeriod, view);
     }
 
     private accelerometerDataChangedHandler(event: Event) {

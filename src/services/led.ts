@@ -23,10 +23,7 @@
 * SOFTWARE.
 */
 
-/**
- * @hidden
- */
-export const LedUuid = "e95dd91d-251d-470a-a062-fa1922dfa9a8";
+import { ServiceHelper } from "../service-helper";
 
 /**
  * @hidden
@@ -47,49 +44,48 @@ export type LedMatrix = [
 
 export class LedService {
 
-    public static createService(services: BluetoothRemoteGATTService[]): LedService | undefined {
-        const found = services.find(service => service.uuid === LedUuid);
-        if (found) {
-            return new LedService(found);
-        }
-        return undefined;
+    /**
+     * @hidden
+     */
+    public static uuid = "e95dd91d-251d-470a-a062-fa1922dfa9a8";
+
+    /**
+     * @hidden
+     */
+    public static async create(service: BluetoothRemoteGATTService): Promise<LedService> {
+        return new LedService(service);
     }
 
-    constructor(private service: BluetoothRemoteGATTService) {
+    private helper: ServiceHelper;
+
+    constructor(service: BluetoothRemoteGATTService) {
+        this.helper = new ServiceHelper(service);
     }
 
     public async writeText(text: string): Promise<void> {
-        const characteristic = await this.service.getCharacteristic(LedCharacteristic.ledText);
         const encoded = this.encodeString(text);
-        return characteristic.writeValue(encoded);
+        return this.helper.setCharacteristicValue(LedCharacteristic.ledText, encoded);
     }
 
     public async getMatrixState(): Promise<LedMatrix> {
-        const view = await this.getCharacteristValue(LedCharacteristic.ledMatrixState);
+        const view = await this.helper.getCharacteristicValue(LedCharacteristic.ledMatrixState);
         return this.viewToLedMatrix(view);
     }
 
     public async setMatrixState(state: LedMatrix): Promise<void> {
-        const characteristic = await this.service.getCharacteristic(LedCharacteristic.ledMatrixState);
         const view = this.ledMatrixToView(state);
-        return characteristic.writeValue(view);
+        return this.helper.setCharacteristicValue(LedCharacteristic.ledMatrixState, view);
     }
 
     public async getScrollingDelay(): Promise<number> {
-        const value = await this.getCharacteristValue(LedCharacteristic.scrollingDelay);
+        const value = await this.helper.getCharacteristicValue(LedCharacteristic.scrollingDelay);
         return value.getUint16(0, true);
     }
 
     public async setScrollingDelay(delay: number): Promise<void> {
-        const char = await this.service.getCharacteristic(LedCharacteristic.scrollingDelay);
         const view = new DataView(new ArrayBuffer(2));
         view.setUint16(0, delay, true);
-        return char.writeValue(view);
-    }
-
-    private async getCharacteristValue(characteristic: BluetoothCharacteristicUUID): Promise<DataView> {
-        const char = await this.service.getCharacteristic(characteristic);
-        return await char.readValue();
+        return this.helper.setCharacteristicValue(LedCharacteristic.scrollingDelay, view);
     }
 
     private encodeString(text: string): ArrayBuffer {
