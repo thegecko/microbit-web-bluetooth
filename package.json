@@ -21,8 +21,7 @@
   ],
   "scripts": {
     "build": "rollup -c && typedoc src",
-    "watch": "rollup -c -w",
-    "publish:next": "npm publish --tag next"
+    "watch": "rollup -c -w"
   },
   "engines": {
     "node": ">=8.14.0"
