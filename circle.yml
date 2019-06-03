@@ -19,6 +19,8 @@ jobs:
     steps:
       - attach_workspace:
           at: ../
+      - run: 'echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc'
+      - run: npm run publish:next
       - run: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - run: git config --global user.name thegecko
       - run: git config --global user.email github@thegecko.org

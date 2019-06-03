@@ -1,6 +1,6 @@
 {
   "name": "microbit-web-bluetooth",
-  "version": "0.2.1",
+  "version": "0.2.0",
   "description": "Web Bluetooth library for micro:bit",
   "homepage": "https://github.com/thegecko/microbit-web-bluetooth",
   "license": "MIT",
@@ -21,7 +21,8 @@
   ],
   "scripts": {
     "build": "rollup -c && typedoc src",
-    "watch": "rollup -c -w"
+    "watch": "rollup -c -w",
+    "publish:next": "npm publish --tag next"
   },
   "engines": {
     "node": ">=8.14.0"
