@@ -25,20 +25,39 @@
 
 import { EventEmitter } from "events";
 
+const DEFAULT_RETRIES = 3;
+
 export interface ServiceEventHandler {
     characteristic: BluetoothCharacteristicUUID;
     handler: (event: Event) => void;
 }
 
 export class ServiceHelper {
-    constructor(private service: BluetoothRemoteGATTService, private emitter?: EventEmitter) {
+
+    private characteristics?: BluetoothRemoteGATTCharacteristic[];
+
+    constructor(private service: BluetoothRemoteGATTService, private emitter?: EventEmitter, private retries = DEFAULT_RETRIES) {
     }
 
-    private async getCharacteristic(characteristic: BluetoothCharacteristicUUID): Promise<BluetoothRemoteGATTCharacteristic | undefined> {
-        try {
-            return await this.service.getCharacteristic(characteristic);
-        } catch (e) {
-            return undefined;
+    private async getCharacteristic(uuid: BluetoothCharacteristicUUID): Promise<BluetoothRemoteGATTCharacteristic | undefined> {
+        if (!this.characteristics) {
+            this.characteristics = await this.service.getCharacteristics();
+        }
+
+        return this.characteristics.find(characteristic => characteristic.uuid === uuid);
+    }
+
+    private retry<T>(fn: () => Promise<T>): Promise<T> {
+        let tries = 0;
+        while (true) {
+            tries ++;
+            try {
+                return fn();
+            } catch (error) {
+                if (tries === this.retries) {
+                    throw error;
+                }
+            }
         }
     }
 
@@ -49,7 +68,7 @@ export class ServiceHelper {
             throw new Error("Unable to locate characteristic");
         }
 
-        return await characteristic.readValue();
+        return await this.retry(async () => characteristic.readValue());
     }
 
     public async setCharacteristicValue(uuid: BluetoothCharacteristicUUID, value: BufferSource): Promise<void> {
@@ -59,7 +78,7 @@ export class ServiceHelper {
             throw new Error("Unable to locate characteristic");
         }
 
-        return characteristic.writeValue(value);
+        await this.retry(async () => characteristic.writeValue(value));
     }
 
     public async handleListener(event: string, uuid: BluetoothCharacteristicUUID, handler: (event: Event) => void) {
@@ -69,14 +88,14 @@ export class ServiceHelper {
             return;
         }
 
-        await characteristic.startNotifications();
+        await this.retry(async () => characteristic.startNotifications());
 
         this.emitter!.on("newListener", (emitterEvent: string) => {
             if (emitterEvent !== event || this.emitter!.listenerCount(event) > 0) {
                 return;
             }
 
-            characteristic.addEventListener("characteristicvaluechanged", handler);
+            return this.retry(async () => characteristic.addEventListener("characteristicvaluechanged", handler));
         });
 
         this.emitter!.on("removeListener", (emitterEvent: string) => {
@@ -84,7 +103,7 @@ export class ServiceHelper {
                 return;
             }
 
-            characteristic.removeEventListener("characteristicvaluechanged", handler);
+            return this.retry(async () => characteristic.removeEventListener("characteristicvaluechanged", handler));
         });
     }
 }
