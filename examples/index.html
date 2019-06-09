@@ -5,24 +5,28 @@
     </head>
     <body>
         <button id="find">find</button>
+        <div id="log" style="white-space: pre" />
         <script>
+            const logEl = document.getElementById("log");
+            const log = (message) => logEl.innerHTML = `${message}\n${logEl.innerHTML}`;
+            const logJson = (message) => log(JSON.stringify(message, null, 2));
+            const eventHandler = event => log(`${event.type}: ${JSON.stringify(event.detail, null, 2)}`);
+
             document.getElementById("find").onclick = async () => {
                 const device = await microbit.requestMicrobit(window.navigator.bluetooth);
                 if (device) {
                     const services = await microbit.getServices(device);
 
                     if (services.deviceInformationService) {
-                        console.log(await services.deviceInformationService.readDeviceInformation());
+                        logJson(await services.deviceInformationService.readDeviceInformation());
                     }
 
                     if (services.uartService) {
-                        const uartHandler = data => console.log(data.detail);
-                        services.uartService.addEventListener("receiveString", uartHandler);
+                        services.uartService.addEventListener("receiveString", eventHandler);
                         await services.uartService.send(new Uint8Array([104, 101, 108, 108, 111, 58])); // hello:
                     }
 
                     if (services.ledService) {
-                        await services.ledService.setScrollingDelay(50);
                         await services.ledService.setMatrixState([
                             [1, 0, 1, 0, 0],
                             [1, 1, 1, 1, 1],
@@ -30,35 +34,38 @@
                             [0, 1, 0, 1, 0],
                             [1, 0, 0, 0, 1]
                         ]);
-                        console.log(await services.ledService.getMatrixState());
+                        logJson(await services.ledService.getMatrixState());
+
+                        await services.ledService.setScrollingDelay(50);
+                        log(await services.ledService.getScrollingDelay());
+
                         await services.ledService.writeText("Web BLE");
                     }
 
                     if (services.buttonService) {
-                        const buttonHandler = data => console.log(data);
-                        services.buttonService.addEventListener("buttonastatechanged", buttonHandler);
-                        services.buttonService.addEventListener("buttonbstatechanged", buttonHandler);
+                        services.buttonService.addEventListener("buttonastatechanged", eventHandler);
+                        services.buttonService.addEventListener("buttonbstatechanged", eventHandler);
                     }
 
                     if (services.temperatureService) {
                         await services.temperatureService.setTemperaturePeriod(2000);
-                        const temperatureHandler = data => console.log(data);
-                        services.temperatureService.addEventListener("temperaturechanged", temperatureHandler);
+                        log(await services.temperatureService.getTemperaturePeriod());
+                        services.temperatureService.addEventListener("temperaturechanged", eventHandler);
                     }
 
                     if (services.accelerometerService) {
                         await services.accelerometerService.setAccelerometerPeriod(640);
-                        const accelerometerHandler = data => console.log(data.detail);
-                        services.accelerometerService.addEventListener("accelerometerdatachanged", accelerometerHandler);
+                        log(await services.accelerometerService.getAccelerometerPeriod());
+                        services.accelerometerService.addEventListener("accelerometerdatachanged", eventHandler);
                     }
 
                     if (services.magnetometerService) {
                         const startMagnetometer = async () => {
                             await services.magnetometerService.setMagnetometerPeriod(640);
-                            console.log(await services.magnetometerService.getMagnetometerPeriod());
-                            const magnetometerHandler = data => console.log(data.detail);
-                            services.magnetometerService.addEventListener("magnetometerdatachanged", magnetometerHandler);
-                            services.magnetometerService.addEventListener("magnetometerbearingchanged", magnetometerHandler);
+                            log(await services.magnetometerService.getMagnetometerPeriod());
+
+                            services.magnetometerService.addEventListener("magnetometerdatachanged", eventHandler);
+                            services.magnetometerService.addEventListener("magnetometerbearingchanged", eventHandler);
                         };
 
                         services.magnetometerService.addEventListener("magnetometercalibrationchanged", async response => {

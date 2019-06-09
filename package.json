@@ -42,7 +42,7 @@
     "typescript": "^3.4.5"
   },
   "dependencies": {
-    "@types/web-bluetooth": "0.0.4",
-    "@types/node": "8.10.40"
+    "@types/node": "8.10.40",
+    "@types/web-bluetooth": "~0.0.4"
   }
 }
