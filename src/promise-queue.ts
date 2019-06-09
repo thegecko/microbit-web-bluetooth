@@ -23,12 +23,18 @@
 * SOFTWARE.
 */
 
+/**
+ * @hidden
+ */
 interface QueuedPromise {
     fn: () => Promise<any>;
     resolve: (value?: any | PromiseLike<any> | undefined) => void;
     reject: (reason?: any) => void;
 }
 
+/**
+ * @hidden
+ */
 export class PromiseQueue {
 
     private queue: QueuedPromise[] = [];

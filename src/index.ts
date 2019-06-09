@@ -45,11 +45,17 @@ export interface Services {
     eventService?: EventService;
 }
 
+/**
+ * @hidden
+ */
 interface Service {
     uuid: BluetoothCharacteristicUUID;
     create(service: BluetoothRemoteGATTService): Promise<any>;
 }
 
+/**
+ * @hidden
+ */
 class ServiceBuilder {
 
     constructor(private services: BluetoothRemoteGATTService[]) {

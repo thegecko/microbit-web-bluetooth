@@ -36,18 +36,45 @@ export enum EventCharacteristic {
     clientEvent = "e95d5404-251d-470a-a062-fa1922dfa9a8"
 }
 
+/**
+ * micro:bit event
+ */
 export interface MicrobitEvent {
+    /**
+     * The type of event
+     */
     type: number;
+    /**
+     * The value for the event
+     */
     value: number;
 }
 
+/**
+ * Events raised by the event service
+ */
 export interface MicrobitEvents {
+    /**
+     * @hidden
+     */
     newListener: keyof MicrobitEvents;
+    /**
+     * @hidden
+     */
     removeListener: keyof MicrobitEvents;
+    /**
+     * micro:bit requirements changed event
+     */
     microbitrequirementschanged: MicrobitEvent;
+    /**
+     * micro:bit event event
+     */
     microbitevent: MicrobitEvent;
 }
 
+/**
+ * Event Service
+ */
 export class EventService extends (EventDispatcher as new() => TypedDispatcher<MicrobitEvents>) {
 
     /**
@@ -66,6 +93,9 @@ export class EventService extends (EventDispatcher as new() => TypedDispatcher<M
 
     private helper: ServiceHelper;
 
+    /**
+     * @hidden
+     */
     constructor(service: BluetoothRemoteGATTService) {
         super();
         this.helper = new ServiceHelper(service, this);
@@ -76,11 +106,19 @@ export class EventService extends (EventDispatcher as new() => TypedDispatcher<M
         await this.helper.handleListener("microbitrequirementschanged", EventCharacteristic.microBitRequirements, this.microbitRequirementsChangedHandler.bind(this));
     }
 
+    /**
+     * Get micro:bit event requirements
+     */
     public async getMicrobitRequirements(): Promise<MicrobitEvent> {
         const value = await this.helper.getCharacteristicValue(EventCharacteristic.microBitRequirements);
         return this.viewToMicrobitEvent(value);
     }
 
+    /**
+     * Set client event requirements
+     * @param type The type of event to set
+     * @param value The value to set
+     */
     public async setClientRequirements(type: number, value: number): Promise<void> {
         const view = new DataView(new ArrayBuffer(4));
         view.setUint16(0, type, true);
@@ -88,11 +126,19 @@ export class EventService extends (EventDispatcher as new() => TypedDispatcher<M
         return await this.helper.setCharacteristicValue(EventCharacteristic.clientRequirements, view);
     }
 
+    /**
+     * Read micro:bit event
+     */
     public async readMicrobitEvent(): Promise<MicrobitEvent> {
         const value = await this.helper.getCharacteristicValue(EventCharacteristic.microBitEvent);
         return this.viewToMicrobitEvent(value);
     }
 
+    /**
+     * Write client event
+     * @param type The event type
+     * @param value The event value
+     */
     public async writeClientEvent(type: number, value: number): Promise<void> {
         const view = new DataView(new ArrayBuffer(4));
         view.setUint16(0, type, true);

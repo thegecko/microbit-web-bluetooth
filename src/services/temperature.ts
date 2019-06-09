@@ -34,12 +34,27 @@ export enum TemperatureCharacteristic {
     temperaturePeriod = "e95d1b25-251d-470a-a062-fa1922dfa9a8"
 }
 
+/**
+ * Events raised by the temperature service
+ */
 export interface TemperatureEvents {
+    /**
+     * @hidden
+     */
     newListener: keyof TemperatureEvents;
+    /**
+     * @hidden
+     */
     removeListener: keyof TemperatureEvents;
+    /**
+     * Temperature changed event
+     */
     temperaturechanged: number;
 }
 
+/**
+ * Temperature Service
+ */
 export class TemperatureService extends (EventDispatcher as new() => TypedDispatcher<TemperatureEvents>) {
 
     /**
@@ -58,6 +73,9 @@ export class TemperatureService extends (EventDispatcher as new() => TypedDispat
 
     private helper: ServiceHelper;
 
+    /**
+     * @hidden
+     */
     constructor(service: BluetoothRemoteGATTService) {
         super();
         this.helper = new ServiceHelper(service, this);
@@ -67,16 +85,26 @@ export class TemperatureService extends (EventDispatcher as new() => TypedDispat
         await this.helper.handleListener("temperaturechanged", TemperatureCharacteristic.temperature, this.temperatureChangedHandler.bind(this));
     }
 
+    /**
+     * Read temperature
+     */
     public async readTemperature(): Promise<number> {
         const value = await this.helper.getCharacteristicValue(TemperatureCharacteristic.temperature);
         return value.getInt8(0);
     }
 
+    /**
+     * Get temperature sample period
+     */
     public async getTemperaturePeriod(): Promise<number> {
         const value = await this.helper.getCharacteristicValue(TemperatureCharacteristic.temperaturePeriod);
         return value.getUint16(0, true);
     }
 
+    /**
+     * Set temperature sample period
+     * @param frequency The frequency to use (milliseconds)
+     */
     public async setTemperaturePeriod(frequency: number): Promise<void> {
         const view = new DataView(new ArrayBuffer(2));
         view.setUint16(0, frequency, true);

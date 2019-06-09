@@ -36,14 +36,35 @@ export enum DeviceInformationCharacteristic {
     manufacturer = "00002a29-0000-1000-8000-00805f9b34fb"
 }
 
+/**
+ * Device information structure
+ */
 export interface DeviceInformation {
+    /**
+     * Model Number
+     */
     modelNumber?: string;
+    /**
+     * Serial Number
+     */
     serialNumber?: string;
+    /**
+     * Firmware Revision
+     */
     firmwareRevision?: string;
+    /**
+     * Hardware Revision
+     */
     hardwareRevision?: string;
+    /**
+     * Manufacturer Name
+     */
     manufacturer?: string;
 }
 
+/**
+ * Device Information Service
+ */
 export class DeviceInformationService {
 
     /**
@@ -60,10 +81,16 @@ export class DeviceInformationService {
 
     private helper: ServiceHelper;
 
+    /**
+     * @hidden
+     */
     constructor(service: BluetoothRemoteGATTService) {
         this.helper = new ServiceHelper(service);
     }
 
+    /**
+     * Read device information
+     */
     public async readDeviceInformation(): Promise<DeviceInformation> {
         const info: DeviceInformation = {};
 

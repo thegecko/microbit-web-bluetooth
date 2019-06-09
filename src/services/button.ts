@@ -34,19 +34,49 @@ export enum ButtonCharacteristic {
     buttonBState = "e95dda91-251d-470a-a062-fa1922dfa9a8"
 }
 
+/**
+ * Button state enum
+ */
 export enum ButtonState {
+    /**
+     * Button released
+     */
     Release = 0,
+    /**
+     * Button pressed - short
+     */
     ShortPress = 1,
+    /**
+     * Button pressed - long
+     */
     LongPress = 2
 }
 
+/**
+ * Events raised by the button service
+ */
 export interface ButtonEvents {
+    /**
+     * @hidden
+     */
     newListener: keyof ButtonEvents;
+    /**
+     * @hidden
+     */
     removeListener: keyof ButtonEvents;
+    /**
+     * Button A state changed event
+     */
     buttonastatechanged: ButtonState;
+    /**
+     * Button B state changed event
+     */
     buttonbstatechanged: ButtonState;
 }
 
+/**
+ * Button Service
+ */
 export class ButtonService extends (EventDispatcher as new() => TypedDispatcher<ButtonEvents>) {
 
     /**
@@ -65,6 +95,9 @@ export class ButtonService extends (EventDispatcher as new() => TypedDispatcher<
 
     private helper: ServiceHelper;
 
+    /**
+     * @hidden
+     */
     constructor(service: BluetoothRemoteGATTService) {
         super();
         this.helper = new ServiceHelper(service, this);
@@ -75,11 +108,17 @@ export class ButtonService extends (EventDispatcher as new() => TypedDispatcher<
         await this.helper.handleListener("buttonbstatechanged", ButtonCharacteristic.buttonBState, this.buttonBStateChangedHandler.bind(this));
     }
 
+    /**
+     * Read state of button A
+     */
     public async readButtonAState(): Promise<ButtonState> {
         const value = await this.helper.getCharacteristicValue(ButtonCharacteristic.buttonAState);
         return value.getUint8(0);
     }
 
+    /**
+     * Read state of button B
+     */
     public async readButtonBState(): Promise<ButtonState> {
         const value = await this.helper.getCharacteristicValue(ButtonCharacteristic.buttonBState);
         return value.getUint8(0);

@@ -32,6 +32,9 @@ export enum DfuCharacteristic {
     dfuControl = "e95d93b1-251d-470a-a062-fa1922dfa9a8"
 }
 
+/**
+ * @hidden
+ */
 export class DfuControlService {
 
     /**
@@ -46,8 +49,14 @@ export class DfuControlService {
         return new DfuControlService(service);
     }
 
+    /**
+     * @hidden
+     */
     public helper: ServiceHelper;
 
+    /**
+     * @hidden
+     */
     constructor(service: BluetoothRemoteGATTService) {
         this.helper = new ServiceHelper(service);
     }

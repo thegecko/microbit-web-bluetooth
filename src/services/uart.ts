@@ -34,13 +34,31 @@ export enum UartCharacteristic {
     rx = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
 }
 
+/**
+ * Events raised by the UART service
+ */
 export interface UartEvents {
+    /**
+     * @hidden
+     */
     newListener: keyof UartEvents;
+    /**
+     * @hidden
+     */
     removeListener: keyof UartEvents;
+    /**
+     * Serial data received event
+     */
     receive: Uint8Array;
-    receiveString: string;
+    /**
+     * Serial received text event
+     */
+    receiveText: string;
 }
 
+/**
+ * UART Service
+ */
 export class UartService extends (EventDispatcher as new() => TypedDispatcher<UartEvents>) {
 
     /**
@@ -59,6 +77,9 @@ export class UartService extends (EventDispatcher as new() => TypedDispatcher<Ua
 
     private helper: ServiceHelper;
 
+    /**
+     * @hidden
+     */
     constructor(service: BluetoothRemoteGATTService) {
         super();
         this.helper = new ServiceHelper(service, this);
@@ -66,14 +87,22 @@ export class UartService extends (EventDispatcher as new() => TypedDispatcher<Ua
 
     private async init() {
         await this.helper.handleListener("receive", UartCharacteristic.tx, this.receiveHandler.bind(this));
-        await this.helper.handleListener("receiveString", UartCharacteristic.tx, this.receiveStringHandler.bind(this));
+        await this.helper.handleListener("receiveText", UartCharacteristic.tx, this.receiveTextHandler.bind(this));
     }
 
+    /**
+     * Send serial data
+     * @param value The buffer to send
+     */
     public async send(value: BufferSource): Promise<void> {
         return this.helper.setCharacteristicValue(UartCharacteristic.rx, value);
     }
 
-    public async sendString(value: string): Promise<void> {
+    /**
+     * Send serial text
+     * @param value The text to send
+     */
+    public async sendText(value: string): Promise<void> {
         const arrayData = value.split("").map((e: string) => e.charCodeAt(0));
         return this.helper.setCharacteristicValue(UartCharacteristic.rx, new Uint8Array(arrayData).buffer);
     }
@@ -84,10 +113,10 @@ export class UartService extends (EventDispatcher as new() => TypedDispatcher<Ua
         this.dispatchEvent("receive", value);
     }
 
-    private receiveStringHandler(event: Event) {
+    private receiveTextHandler(event: Event) {
         const view = (event.target as BluetoothRemoteGATTCharacteristic).value!;
         const numberArray = Array.prototype.slice.call(new Uint8Array(view.buffer));
         const value = String.fromCharCode.apply(null, numberArray);
-        this.dispatchEvent("receiveString", value);
+        this.dispatchEvent("receiveText", value);
     }
 }

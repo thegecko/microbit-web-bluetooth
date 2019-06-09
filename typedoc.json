@@ -1,6 +1,6 @@
 {
     "name": "micro:bit Web Bluetooth API Documentation",
-    "readme": "./README.md",
+    "readme": "./documentation.md",
     "theme": "./docs-theme",
     "module": "commonjs",
     "target": "es6",

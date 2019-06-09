@@ -35,6 +35,9 @@ export enum IoPinCharacteristic {
     pwmControl = "e95dd822-251d-470a-a062-fa1922dfa9a8"
 }
 
+/**
+ * @hidden
+ */
 export class IoPinService {
 
     /**
@@ -49,8 +52,14 @@ export class IoPinService {
         return new IoPinService(service);
     }
 
+    /**
+     * @hidden
+     */
     public helper: ServiceHelper;
 
+    /**
+     * @hidden
+     */
     constructor(service: BluetoothRemoteGATTService) {
         this.helper = new ServiceHelper(service);
     }

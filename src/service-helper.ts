@@ -26,11 +26,17 @@
 import { EventEmitter } from "events";
 import { PromiseQueue } from "./promise-queue";
 
+/**
+ * @hidden
+ */
 export interface ServiceEventHandler {
     characteristic: BluetoothCharacteristicUUID;
     handler: (event: Event) => void;
 }
 
+/**
+ * @hidden
+ */
 export class ServiceHelper {
 
     private static queue = new PromiseQueue();

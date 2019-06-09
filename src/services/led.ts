@@ -34,6 +34,9 @@ export enum LedCharacteristic {
     scrollingDelay = "e95d0d2d-251d-470a-a062-fa1922dfa9a8"
 }
 
+/**
+ * LED matrix structure
+ */
 export type LedMatrix = [
     [boolean, boolean, boolean, boolean, boolean],
     [boolean, boolean, boolean, boolean, boolean],
@@ -42,6 +45,9 @@ export type LedMatrix = [
     [boolean, boolean, boolean, boolean, boolean]
 ];
 
+/**
+ * LED Service
+ */
 export class LedService {
 
     /**
@@ -58,30 +64,51 @@ export class LedService {
 
     private helper: ServiceHelper;
 
+    /**
+     * @hidden
+     */
     constructor(service: BluetoothRemoteGATTService) {
         this.helper = new ServiceHelper(service);
     }
 
+    /**
+     * Write text to the LED matrix
+     * @param text Te text to display
+     */
     public async writeText(text: string): Promise<void> {
         const encoded = this.encodeString(text);
         return this.helper.setCharacteristicValue(LedCharacteristic.ledText, encoded);
     }
 
-    public async getMatrixState(): Promise<LedMatrix> {
+    /**
+     * Read matrix state
+     */
+    public async readMatrixState(): Promise<LedMatrix> {
         const view = await this.helper.getCharacteristicValue(LedCharacteristic.ledMatrixState);
         return this.viewToLedMatrix(view);
     }
 
-    public async setMatrixState(state: LedMatrix): Promise<void> {
+    /**
+     * Write matrix state
+     * @param state The matrix data to set
+     */
+    public async writeMatrixState(state: LedMatrix): Promise<void> {
         const view = this.ledMatrixToView(state);
         return this.helper.setCharacteristicValue(LedCharacteristic.ledMatrixState, view);
     }
 
+    /**
+     * Get scrolling delay
+     */
     public async getScrollingDelay(): Promise<number> {
         const value = await this.helper.getCharacteristicValue(LedCharacteristic.scrollingDelay);
         return value.getUint16(0, true);
     }
 
+    /**
+     * Set scrolling delay
+     * @param delay The delay to set (milliseconds)
+     */
     public async setScrollingDelay(delay: number): Promise<void> {
         const view = new DataView(new ArrayBuffer(2));
         view.setUint16(0, delay, true);

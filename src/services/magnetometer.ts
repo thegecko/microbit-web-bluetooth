@@ -36,29 +36,80 @@ export enum MagnetometerCharacteristic {
     magnetometerCalibration = "e95db358-251d-470a-a062-fa1922dfa9a8"
 }
 
+/**
+ * Data received from the magnetometer
+ */
 export interface MagnetometerData {
+    /**
+     * Force in direction X
+     */
     x: number;
+    /**
+     * Force in direction Y
+     */
     y: number;
+    /**
+     * Force in direction Z
+     */
     z: number;
 }
 
+/**
+ * Magnetometer calibation state
+ */
 export enum MagnetometerCalibration {
+    /**
+     * Unknown state
+     */
     unknown = 0,
+    /**
+     * Calibration has been requestes
+     */
     requested = 1,
+    /**
+     * Calibration completed
+     */
     completed = 2,
+    /**
+     * Calibration had an error
+     */
     errored = 3
 }
 
+/**
+ * The sample period to read magnetometer data (milliseconds)
+ */
 export type MagnetometerPeriod = 1 | 2 | 5 | 10 | 20 | 80 | 160 | 640;
 
+/**
+ * Events raised by the magnetometer service
+ */
 export interface MagnetometerEvents {
+    /**
+     * @hidden
+     */
     newListener: keyof MagnetometerEvents;
+    /**
+     * @hidden
+     */
     removeListener: keyof MagnetometerEvents;
+    /**
+     * Magnetometer data changed event
+     */
     magnetometerdatachanged: MagnetometerData;
+    /**
+     * Magnetometer bearing changed event
+     */
     magnetometerbearingchanged: number;
+    /**
+     * Magnetometer calibration changed event
+     */
     magnetometercalibrationchanged: MagnetometerCalibration;
 }
 
+/**
+ * Magnetometer Service
+ */
 export class MagnetometerService extends (EventDispatcher as new() => TypedDispatcher<MagnetometerEvents>) {
 
     /**
@@ -77,6 +128,9 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
 
     private helper: ServiceHelper;
 
+    /**
+     * @hidden
+     */
     constructor(service: BluetoothRemoteGATTService) {
         super();
         this.helper = new ServiceHelper(service, this);
@@ -88,16 +142,25 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
         await this.helper.handleListener("magnetometercalibrationchanged", MagnetometerCharacteristic.magnetometerCalibration, this.magnetometerCalibrationChangedHandler.bind(this));
     }
 
+    /**
+     * Request magnetometer calibration
+     */
     public async calibrate() {
         return this.helper.setCharacteristicValue(MagnetometerCharacteristic.magnetometerCalibration, new Uint8Array([1]));
     }
 
+    /**
+     * Read magnetometer data
+     */
     public async readMagnetometerData(): Promise<MagnetometerData> {
         const view = await this.helper.getCharacteristicValue(MagnetometerCharacteristic.magnetometerData);
         return this.dataViewToMagnetometerData(view);
     }
 
-    public async getMagnetometerBearing(): Promise<number | undefined> {
+    /**
+     * Read magnetometer bearing
+     */
+    public async readMagnetometerBearing(): Promise<number | undefined> {
         const view = await this.helper.getCharacteristicValue(MagnetometerCharacteristic.magnetometerBearing);
         if (view.byteLength === 2) {
             return view.getUint16(0, true);
@@ -105,11 +168,18 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
         return undefined;
     }
 
+    /**
+     * Get magnetometer sample period
+     */
     public async getMagnetometerPeriod(): Promise<MagnetometerPeriod> {
         const value = await this.helper.getCharacteristicValue(MagnetometerCharacteristic.magnetometerPeriod);
         return value.getUint16(0, true) as MagnetometerPeriod;
     }
 
+    /**
+     * Set magnetometer sample period
+     * @param frequency The frequency interval to use
+     */
     public async setMagnetometerPeriod(frequency: MagnetometerPeriod): Promise<void> {
         const view = new DataView(new ArrayBuffer(2));
         view.setUint16(0, frequency, true);

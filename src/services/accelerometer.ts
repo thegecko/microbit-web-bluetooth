@@ -34,20 +34,50 @@ export enum AccelerometerCharacteristic {
     accelerometerPeriod = "e95dfb24-251d-470a-a062-fa1922dfa9a8"
 }
 
+/**
+ * Data received from the accelerometer
+ */
 export interface AccelerometerData {
+    /**
+     * Force in direction X
+     */
     x: number;
+    /**
+     * Force in direction Y
+     */
     y: number;
+    /**
+     * Force in direction Z
+     */
     z: number;
 }
 
+/**
+ * The sample period to read accelerometer data (milliseconds)
+ */
 export type AccelerometerPeriod = 1 | 2 | 5 | 10 | 20 | 80 | 160 | 640;
 
+/**
+ * Events raised by the accelerometer service
+ */
 export interface AccelerometerEvents {
+    /**
+     * @hidden
+     */
     newListener: keyof AccelerometerEvents;
+    /**
+     * @hidden
+     */
     removeListener: keyof AccelerometerEvents;
+    /**
+     * Accelerometer data changed event
+     */
     accelerometerdatachanged: AccelerometerData;
 }
 
+/**
+ * Accelerometer Service
+ */
 export class AccelerometerService extends (EventDispatcher as new() => TypedDispatcher<AccelerometerEvents>) {
 
     /**
@@ -66,6 +96,9 @@ export class AccelerometerService extends (EventDispatcher as new() => TypedDisp
 
     private helper: ServiceHelper;
 
+    /**
+     * @hidden
+     */
     constructor(service: BluetoothRemoteGATTService) {
         super();
         this.helper = new ServiceHelper(service, this);
@@ -75,16 +108,26 @@ export class AccelerometerService extends (EventDispatcher as new() => TypedDisp
         await this.helper.handleListener("accelerometerdatachanged", AccelerometerCharacteristic.accelerometerData, this.accelerometerDataChangedHandler.bind(this));
     }
 
+    /**
+     * Read acceleromter data
+     */
     public async readAccelerometerData(): Promise<AccelerometerData> {
         const view = await this.helper.getCharacteristicValue(AccelerometerCharacteristic.accelerometerData);
         return this.dataViewToAccelerometerData(view);
     }
 
+    /**
+     * Get accelerometer sample period
+     */
     public async getAccelerometerPeriod(): Promise<AccelerometerPeriod> {
         const value = await this.helper.getCharacteristicValue(AccelerometerCharacteristic.accelerometerPeriod);
         return value.getUint16(0, true) as AccelerometerPeriod;
     }
 
+    /**
+     * Set accelerometer sample period
+     * @param frequency The frequency interval to use
+     */
     public async setAccelerometerPeriod(frequency: AccelerometerPeriod): Promise<void> {
         const view = new DataView(new ArrayBuffer(2));
         view.setUint16(0, frequency, true);

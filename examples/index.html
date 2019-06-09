@@ -22,19 +22,19 @@
                     }
 
                     if (services.uartService) {
-                        services.uartService.addEventListener("receiveString", eventHandler);
+                        services.uartService.addEventListener("receiveText", eventHandler);
                         await services.uartService.send(new Uint8Array([104, 101, 108, 108, 111, 58])); // hello:
                     }
 
                     if (services.ledService) {
-                        await services.ledService.setMatrixState([
+                        await services.ledService.writeMatrixState([
                             [1, 0, 1, 0, 0],
                             [1, 1, 1, 1, 1],
                             [0, 0, 1, 0, 0],
                             [0, 1, 0, 1, 0],
                             [1, 0, 0, 0, 1]
                         ]);
-                        logJson(await services.ledService.getMatrixState());
+                        logJson(await services.ledService.readMatrixState());
 
                         await services.ledService.setScrollingDelay(50);
                         log(await services.ledService.getScrollingDelay());
