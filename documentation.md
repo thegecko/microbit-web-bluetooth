@@ -12,6 +12,50 @@ Web Bluetooth library for micro:bit implementing the [micro:bit Bluetooth Profil
 $ npm install microbit-web-bluetooth
 ```
 
+## Device Setup
+
+Your micro:bit needs to be running a program which exposes the bluetooth service you wish to interact with. 
+
+Pre-compiled programs exposing bluetooth services are available for testing purposes:
+
+|Service|[no-magnet-no-io](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-ble-open-no-magnet-no-io.hex)|[no-magnet-no-uart](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-ble-open-no-magnet-no-uart.hex)|[no-event-no-uart-no-dfu](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-uart-no-dfu.hex)|[no-event-no-io-no-temp-no-acc](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-io-no-temp-no-acc.hex)|
+|---|---|---|---|---|
+|Device Info|✓|✓|✓|✓|
+|Button|✓|✓|✓|✓|
+|LED|✓|✓|✓|✓|
+|Temperature|✓|✓|✓|-|
+|Accelerometer|✓|✓|✓|-|
+|Event|✓|✓|-|-|
+|DFU|✓|✓|-|✓|
+|UART|✓|-|-|✓|
+|Magnetometer|-|-|✓|✓|
+|IO Pin|-|✓|✓|-|
+
+The source for a sample program to do this is [available here](https://github.com/lancaster-university/microbit-samples/tree/master/source/examples/bluetooth-services).
+
+__Note:__ The configuration must mark `bluetooth` as being `open` in order for Web Bluetooth to work. e.g.:
+
+```json
+{
+    "microbit-dal": {
+        "bluetooth": {
+            "enabled": 1,
+            "pairing_mode": 1,
+            "private_addressing": 0,
+            "open": 1,
+            "whitelist": 1,
+            "advertising_timeout": 0,
+            "tx_power": 0,
+            "dfu_service": 0,
+            "event_service": 1,
+            "device_info_service": 1,
+            "security_level": "SECURITY_MODE_ENCRYPTION_NO_MITM"
+        },
+        "gatt_table_size": "0x700"
+    }
+}
+```
+
 ## Usage
 
 Include the package in your web page, exposing a global named `microbit`:
