@@ -18,7 +18,9 @@ Your micro:bit needs to be running a program which exposes the bluetooth service
 
 Pre-compiled programs exposing bluetooth services are available for testing purposes:
 
-|Service|[no-magnet-no-io](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-ble-open-no-magnet-no-io.hex)|[no-magnet-no-uart](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-ble-open-no-magnet-no-uart.hex)|[no-event-no-uart-no-dfu](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-uart-no-dfu.hex)|[no-event-no-io-no-temp-no-acc](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-io-no-temp-no-acc.hex)|
+https://github.com/thegecko/microbit-web-bluetooth/tree/master/hex
+
+|Service|[no-magnet-no-io](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-io.hex)|[no-magnet-no-uart](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-uart.hex)|[no-event-no-uart-no-dfu](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-uart-no-dfu.hex)|[no-event-no-io-no-temp-no-acc](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-io-no-temp-no-acc.hex)|
 |---|---|---|---|---|
 |Device Info|✓|✓|✓|✓|
 |Button|✓|✓|✓|✓|
