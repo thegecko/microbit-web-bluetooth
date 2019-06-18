@@ -89,16 +89,16 @@ export class TemperatureService extends (EventDispatcher as new() => TypedDispat
      * Read temperature
      */
     public async readTemperature(): Promise<number> {
-        const value = await this.helper.getCharacteristicValue(TemperatureCharacteristic.temperature);
-        return value.getInt8(0);
+        const view = await this.helper.getCharacteristicValue(TemperatureCharacteristic.temperature);
+        return view.getInt8(0);
     }
 
     /**
      * Get temperature sample period
      */
     public async getTemperaturePeriod(): Promise<number> {
-        const value = await this.helper.getCharacteristicValue(TemperatureCharacteristic.temperaturePeriod);
-        return value.getUint16(0, true);
+        const view = await this.helper.getCharacteristicValue(TemperatureCharacteristic.temperaturePeriod);
+        return view.getUint16(0, true);
     }
 
     /**

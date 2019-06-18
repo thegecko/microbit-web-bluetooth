@@ -110,8 +110,8 @@ export class EventService extends (EventDispatcher as new() => TypedDispatcher<M
      * Get micro:bit event requirements
      */
     public async getMicrobitRequirements(): Promise<MicrobitEvent> {
-        const value = await this.helper.getCharacteristicValue(EventCharacteristic.microBitRequirements);
-        return this.viewToMicrobitEvent(value);
+        const view = await this.helper.getCharacteristicValue(EventCharacteristic.microBitRequirements);
+        return this.viewToMicrobitEvent(view);
     }
 
     /**
@@ -130,8 +130,8 @@ export class EventService extends (EventDispatcher as new() => TypedDispatcher<M
      * Read micro:bit event
      */
     public async readMicrobitEvent(): Promise<MicrobitEvent> {
-        const value = await this.helper.getCharacteristicValue(EventCharacteristic.microBitEvent);
-        return this.viewToMicrobitEvent(value);
+        const view = await this.helper.getCharacteristicValue(EventCharacteristic.microBitEvent);
+        return this.viewToMicrobitEvent(view);
     }
 
     /**

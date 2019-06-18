@@ -112,16 +112,16 @@ export class ButtonService extends (EventDispatcher as new() => TypedDispatcher<
      * Read state of button A
      */
     public async readButtonAState(): Promise<ButtonState> {
-        const value = await this.helper.getCharacteristicValue(ButtonCharacteristic.buttonAState);
-        return value.getUint8(0);
+        const view = await this.helper.getCharacteristicValue(ButtonCharacteristic.buttonAState);
+        return view.getUint8(0);
     }
 
     /**
      * Read state of button B
      */
     public async readButtonBState(): Promise<ButtonState> {
-        const value = await this.helper.getCharacteristicValue(ButtonCharacteristic.buttonBState);
-        return value.getUint8(0);
+        const view = await this.helper.getCharacteristicValue(ButtonCharacteristic.buttonBState);
+        return view.getUint8(0);
     }
 
     private buttonAStateChangedHandler(event: Event) {

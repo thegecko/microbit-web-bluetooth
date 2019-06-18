@@ -101,8 +101,8 @@ export class LedService {
      * Get scrolling delay
      */
     public async getScrollingDelay(): Promise<number> {
-        const value = await this.helper.getCharacteristicValue(LedCharacteristic.scrollingDelay);
-        return value.getUint16(0, true);
+        const view = await this.helper.getCharacteristicValue(LedCharacteristic.scrollingDelay);
+        return view.getUint16(0, true);
     }
 
     /**

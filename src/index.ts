@@ -43,6 +43,8 @@ export interface Services {
     magnetometerService?: MagnetometerService;
     uartService?: UartService;
     eventService?: EventService;
+    dfuControlService?: DfuControlService;
+    ioPinService?: IoPinService;
 }
 
 /**
@@ -116,6 +118,8 @@ export const getServices = async (device: BluetoothDevice): Promise<Services> =>
     const magnetometerService = await builder.createService(MagnetometerService);
     const uartService = await builder.createService(UartService);
     const eventService = await builder.createService(EventService);
+    const dfuControlService = await builder.createService(DfuControlService);
+    const ioPinService = await builder.createService(IoPinService);
 
     return {
         deviceInformationService,
@@ -126,5 +130,7 @@ export const getServices = async (device: BluetoothDevice): Promise<Services> =>
         magnetometerService,
         uartService,
         eventService,
+        dfuControlService,
+        ioPinService
     };
 };

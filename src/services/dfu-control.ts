@@ -60,4 +60,18 @@ export class DfuControlService {
     constructor(service: BluetoothRemoteGATTService) {
         this.helper = new ServiceHelper(service);
     }
+
+    /**
+     * Request device switches to DFU mode
+     */
+    public requestDfu(): Promise<void> {
+        return this.helper.setCharacteristicValue(DfuCharacteristic.dfuControl, new Uint8Array([1]));
+    }
+
+    /**
+     * Request flash code
+     */
+    public requestFlashCode(): Promise<void> {
+        return this.helper.setCharacteristicValue(DfuCharacteristic.dfuControl, new Uint8Array([2]));
+    }
 }

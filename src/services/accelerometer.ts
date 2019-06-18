@@ -120,8 +120,8 @@ export class AccelerometerService extends (EventDispatcher as new() => TypedDisp
      * Get accelerometer sample period
      */
     public async getAccelerometerPeriod(): Promise<AccelerometerPeriod> {
-        const value = await this.helper.getCharacteristicValue(AccelerometerCharacteristic.accelerometerPeriod);
-        return value.getUint16(0, true) as AccelerometerPeriod;
+        const view = await this.helper.getCharacteristicValue(AccelerometerCharacteristic.accelerometerPeriod);
+        return view.getUint16(0, true) as AccelerometerPeriod;
     }
 
     /**

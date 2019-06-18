@@ -172,8 +172,8 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
      * Get magnetometer sample period
      */
     public async getMagnetometerPeriod(): Promise<MagnetometerPeriod> {
-        const value = await this.helper.getCharacteristicValue(MagnetometerCharacteristic.magnetometerPeriod);
-        return value.getUint16(0, true) as MagnetometerPeriod;
+        const view = await this.helper.getCharacteristicValue(MagnetometerCharacteristic.magnetometerPeriod);
+        return view.getUint16(0, true) as MagnetometerPeriod;
     }
 
     /**

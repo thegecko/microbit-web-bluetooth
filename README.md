@@ -68,12 +68,12 @@ Refer to the [micro:bit Web Bluetooth API Documentation](https://thegecko.github
 - [x] Client Event
 
 ### IO Pin Service
-- [ ] Pin Data
-- [ ] Pin Data Changed Event
-- [ ] Pin AD Configuration
-- [ ] Pin IO Configuration
-- [ ] PWM Control
+- [x] Pin Data
+- [x] Pin Data Changed Event
+- [x] Pin AD Configuration
+- [x] Pin IO Configuration
+- [x] PWM Control
 
 ### DFU Control Service
-- [ ] DFU Control
-- [ ] Partial Flashing
+- [x] Request DFU
+- [x] Request Flash Code
