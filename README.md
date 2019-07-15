@@ -15,7 +15,6 @@ Web Bluetooth library for micro:bit implementing the [micro:bit Bluetooth Profil
 Refer to the [micro:bit Web Bluetooth API Documentation](https://thegecko.github.io/microbit-web-bluetooth/) for more information.
 
 ## Implementation Status
-
 - [x] micro:bit Discovery
 - [x] Service enumeration
 
