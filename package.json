@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "build": "rollup -c && typedoc src",
-    "watch": "rollup -c -w"
+    "watch": "rollup -c -w --config rollup.dev.config.js"
   },
   "engines": {
     "node": ">=8.14.0"
@@ -38,7 +38,7 @@
     "rollup-plugin-typescript2": "^0.21.0",
     "tslint": "^5.16.0",
     "tslint-eslint-rules": "^5.4.0",
-    "typedoc": "^0.14.2",
+    "typedoc": "^0.15.0",
     "typescript": "^3.4.5"
   },
   "dependencies": {
