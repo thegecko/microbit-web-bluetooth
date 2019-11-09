@@ -128,13 +128,21 @@
 <div class="container container-main">
 	<div class="content-wrap">
 		<div class="tsd-panel tsd-typography">
-			<h1 id="micro-bit-web-bluetooth">micro:bit Web Bluetooth</h1>
+			<a href="#microbit-web-bluetooth" id="microbit-web-bluetooth" style="color: inherit; text-decoration: none;">
+				<h1>micro:bit Web Bluetooth</h1>
+			</a>
 			<p>Web Bluetooth library for micro:bit implementing the <a href="https://lancaster-university.github.io/microbit-docs/resources/bluetooth/bluetooth_profile.html">micro:bit Bluetooth Profile</a>.</p>
-			<h2 id="prerequisites">Prerequisites</h2>
+			<a href="#prerequisites" id="prerequisites" style="color: inherit; text-decoration: none;">
+				<h2>Prerequisites</h2>
+			</a>
 			<p><a href="https://nodejs.org">Node.js &gt; v8.14.0</a>, which includes <code>npm</code></p>
-			<h2 id="installation">Installation</h2>
+			<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+				<h2>Installation</h2>
+			</a>
 			<pre><code class="language-bash">$ npm install microbit-web-bluetooth</code></pre>
-			<h2 id="device-setup">Device Setup</h2>
+			<a href="#device-setup" id="device-setup" style="color: inherit; text-decoration: none;">
+				<h2>Device Setup</h2>
+			</a>
 			<p>Your micro:bit needs to be running a program which exposes the bluetooth service you wish to interact with. </p>
 			<p>Pre-compiled programs exposing bluetooth services are available for testing purposes:</p>
 			<p><a href="https://github.com/thegecko/microbit-web-bluetooth/tree/master/hex">https://github.com/thegecko/microbit-web-bluetooth/tree/master/hex</a></p>
@@ -239,9 +247,11 @@
         <span class="hljs-attr">"gatt_table_size"</span>: <span class="hljs-string">"0x700"</span>
     }
 }</code></pre>
-			<h2 id="usage">Usage</h2>
+			<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+				<h2>Usage</h2>
+			</a>
 			<p>Include the package in your web page, exposing a global named <code>microbit</code>:</p>
-			<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"microbit.umd.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+			<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"microbit.umd.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
 			<p>Use <code>window.navigator.bluetooth.requestDevice()</code> to obtain a bluetooth device or use the <a href="globals.html#requestmicrobit">requestMicrobit()</a> helper to discover a micro:bit:</p>
 			<pre><code class="language-javascript"><span class="hljs-keyword">const</span> device = <span class="hljs-keyword">await</span> microbit.requestMicrobit(<span class="hljs-built_in">window</span>.navigator.bluetooth);</code></pre>
 			<p>Use <a href="globals.html#getservices">getServices()</a> to return an array of available services:</p>
