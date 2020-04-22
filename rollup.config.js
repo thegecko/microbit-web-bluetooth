@@ -38,6 +38,6 @@ export default {
             useTsconfigDeclarationDir: true
         }),
         terser(),
-        sourceMaps(),
+        sourceMaps()
     ]
 };
