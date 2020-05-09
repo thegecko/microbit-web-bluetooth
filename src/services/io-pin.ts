@@ -36,6 +36,8 @@ export enum IoPinCharacteristic {
     pwmControl = "e95dd822-251d-470a-a062-fa1922dfa9a8"
 }
 
+const littleEndian = true;
+
 /**
  * Pin data
  */
@@ -63,7 +65,7 @@ export interface PwmControlData {
      */
     value: number;
     /**
-     * Period (in milliseconds)
+     * Period (in microseconds)
      */
     period: number;
 }
@@ -244,7 +246,7 @@ export class IoPinService extends (EventDispatcher as new() => TypedDispatcher<I
             value &= 1 << config[i];
         }
 
-        view.setUint16(0, value >> 8);
+        view.setUint16(0, value >> 8, littleEndian);
         view.setUint8(2, value & 0xff);
         return view;
     }
@@ -252,8 +254,8 @@ export class IoPinService extends (EventDispatcher as new() => TypedDispatcher<I
     private pwmControlDataToDataView(data: PwmControlData): DataView {
         const view = new DataView(new ArrayBuffer(7));
         view.setUint8(0, data.pin);
-        view.setUint16(1, data.value);
-        view.setUint32(3, data.period);
+        view.setUint16(1, data.value, littleEndian);
+        view.setUint32(3, data.period, littleEndian);
         return view;
     }
 }

@@ -36,7 +36,7 @@ export interface PwmControlData {
      */
     value: number;
     /**
-     * Period (in milliseconds)
+     * Period (in microseconds)
      */
     period: number;
 }
