@@ -8,7 +8,7 @@ Web Bluetooth library for micro:bit implementing the [micro:bit Bluetooth Profil
 
 ## Prerequisites
 
-[Node.js > v8.14.0](https://nodejs.org), which includes `npm`
+[Node.js > v10.16.0](https://nodejs.org), which includes `npm`
 
 ## Getting Started
 
