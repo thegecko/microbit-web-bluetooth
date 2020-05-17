@@ -25,7 +25,7 @@
     "watch:web": "rollup -c rollup.web.config.js -w"
   },
   "engines": {
-    "node": ">=8.14.0"
+    "node": ">=10.16.0"
   },
   "devDependencies": {
     "rollup": "^2.2.0",
@@ -43,7 +43,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@types/node": "8.10.40",
+    "@types/node": "10.11.7",
     "@types/web-bluetooth": "~0.0.5"
   }
 }
