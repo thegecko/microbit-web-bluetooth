@@ -4,7 +4,9 @@
         <script type="text/javascript" src="../dist/microbit.umd.js"></script>
     </head>
     <body>
-        <button id="find">find</button>
+        <button id="connect">Connect</button>
+        <button id="compass">Compass</button>
+
         <div id="log" style="white-space: pre" />
         <script>
             const logEl = document.getElementById("log");
@@ -12,7 +14,7 @@
             const logJson = (message) => log(JSON.stringify(message, null, 2));
             const eventHandler = event => log(`${event.type}: ${JSON.stringify(event.detail, null, 2)}`);
 
-            document.getElementById("find").onclick = async () => {
+            document.getElementById("connect").onclick = async () => {
                 const device = await microbit.requestMicrobit(window.navigator.bluetooth);
                 if (device) {
                     const services = await microbit.getServices(device);
@@ -58,27 +60,41 @@
                         log(await services.accelerometerService.getAccelerometerPeriod());
                         services.accelerometerService.addEventListener("accelerometerdatachanged", eventHandler);
                     }
+                }
+            }
 
-                    if (services.magnetometerService) {
-                        const startMagnetometer = async () => {
-                            await services.magnetometerService.setMagnetometerPeriod(640);
-                            log(await services.magnetometerService.getMagnetometerPeriod());
+            document.getElementById("compass").onclick = async () => {
+                const device = await microbit.requestMicrobit(window.navigator.bluetooth);
+                if (device) {
+                    const services = await microbit.getServices(device);
 
-                            services.magnetometerService.addEventListener("magnetometerdatachanged", eventHandler);
-                            services.magnetometerService.addEventListener("magnetometerbearingchanged", eventHandler);
-                        };
+                    if (services.deviceInformationService) {
+                        logJson(await services.deviceInformationService.readDeviceInformation());
+                    }
 
-                        services.magnetometerService.addEventListener("magnetometercalibrationchanged", async response => {
-                            if (response.detail === 2) {
-                                await startMagnetometer();
-                            }
-                        });
+                    if (!services.magnetometerService) {
+                        log("No magnetometer service found");
+                        return;
+                    }
 
-                        try {
-                            await services.magnetometerService.calibrate();
-                        } catch (e) {
+                    const startMagnetometer = async () => {
+                        await services.magnetometerService.setMagnetometerPeriod(640);
+                        log(await services.magnetometerService.getMagnetometerPeriod());
+
+                        services.magnetometerService.addEventListener("magnetometerdatachanged", eventHandler);
+                        services.magnetometerService.addEventListener("magnetometerbearingchanged", eventHandler);
+                    };
+
+                    services.magnetometerService.addEventListener("magnetometercalibrationchanged", async response => {
+                        if (response.detail === 2) {
                             await startMagnetometer();
                         }
+                    });
+
+                    try {
+                        await services.magnetometerService.calibrate();
+                    } catch (e) {
+                        await startMagnetometer();
                     }
                 }
             }
