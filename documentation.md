@@ -20,35 +20,20 @@ Pre-compiled programs exposing bluetooth services are available for testing purp
 
 https://github.com/thegecko/microbit-web-bluetooth/tree/master/hex
 
-The [universal .hex file](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-universal.hex) supports both v1 and v2 micro:bits, but with some limitations on v1. Use this file if you can.
+The first image targets the new micro:bit v2 while older micro:bit v1 versions exist for backwards compatibility:
 
-|Service|micro:bit v1|micro:bit v2|
-|---|---|---|
-|Device Info|✓|✓|
-|Button|✓|✓|
-|LED|✓|✓|
-|Temperature|✓|✓|
-|Accelerometer|✓|✓|
-|Event|✓|✓|
-|DFU|✓|✓|
-|UART|✓|✓|
-|Magnetometer|-|✓|
-|IO Pin|-|✓|
-
-Older micro:bit v1-only versions exist for backwards compatibility:
-
-|Service|[no-magnet-no-io](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-io.hex)|[no-magnet-no-uart](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-uart.hex)|[no-event-no-uart-no-dfu](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-uart-no-dfu.hex)|[no-event-no-io-no-temp-no-acc](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-io-no-temp-no-acc.hex)|
-|---|---|---|---|---|---|
-|Device Info|✓|✓|✓|✓|
-|Button|✓|✓|✓|✓|
-|LED|✓|✓|✓|✓|
-|Temperature|✓|✓|✓|-|
-|Accelerometer|✓|✓|✓|-|
-|Event|✓|✓|-|-|
-|DFU|✓|✓|-|✓|
-|UART|✓|-|-|✓|
-|Magnetometer|-|-|✓|✓|
-|IO Pin|-|✓|✓|-|
+|Service|[microbit-v2](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-microbit-v2.hex)|[no-magnet-no-io](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-io.hex)|[no-magnet-no-uart](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-uart.hex)|[no-event-no-uart-no-dfu](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-uart-no-dfu.hex)|[no-event-no-io-no-temp-no-acc](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-io-no-temp-no-acc.hex)|
+|---|---|---|---|---|---|---|
+|Device Info|✓|✓|✓|✓|✓|
+|Button|✓|✓|✓|✓|✓|
+|LED|✓|✓|✓|✓|✓|
+|Temperature|✓|✓|✓|✓|-|
+|Accelerometer|✓|✓|✓|✓|-|
+|Event|✓|✓|✓|-|-|
+|DFU|✓|✓|✓|-|✓|
+|UART|✓|✓|-|-|✓|
+|Magnetometer|✓|-|-|✓|✓|
+|IO Pin|✓|-|✓|✓|-|
 
 The source for these sample programs is based on the [codal example](https://github.com/microbit-foundation/codal) with the [main.cpp](https://github.com/thegecko/microbit-web-bluetooth/blob/master/examples/main.cpp) file as [outlined in the examples](https://github.com/thegecko/microbit-web-bluetooth/blob/master/examples).
 
