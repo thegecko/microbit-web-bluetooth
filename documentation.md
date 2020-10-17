@@ -20,40 +20,42 @@ Pre-compiled programs exposing bluetooth services are available for testing purp
 
 https://github.com/thegecko/microbit-web-bluetooth/tree/master/hex
 
-|Service|[no-magnet-no-io](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-io.hex)|[no-magnet-no-uart](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-uart.hex)|[no-event-no-uart-no-dfu](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-uart-no-dfu.hex)|[no-event-no-io-no-temp-no-acc](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-io-no-temp-no-acc.hex)|
-|---|---|---|---|---|
-|Device Info|✓|✓|✓|✓|
-|Button|✓|✓|✓|✓|
-|LED|✓|✓|✓|✓|
-|Temperature|✓|✓|✓|-|
-|Accelerometer|✓|✓|✓|-|
-|Event|✓|✓|-|-|
-|DFU|✓|✓|-|✓|
-|UART|✓|-|-|✓|
-|Magnetometer|-|-|✓|✓|
-|IO Pin|-|✓|✓|-|
+The first image targets the new micro:bit v2 while older micro:bit v1 versions exist for backwards compatibility:
 
-The source for a sample program to do this is [available here](https://github.com/lancaster-university/microbit-samples/tree/master/source/examples/bluetooth-services).
+|Service|[microbit-v2](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-microbit-v2.hex)|[no-magnet-no-io](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-io.hex)|[no-magnet-no-uart](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-uart.hex)|[no-event-no-uart-no-dfu](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-uart-no-dfu.hex)|[no-event-no-io-no-temp-no-acc](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-io-no-temp-no-acc.hex)|
+|---|---|---|---|---|---|---|
+|Device Info|✓|✓|✓|✓|✓|
+|Button|✓|✓|✓|✓|✓|
+|LED|✓|✓|✓|✓|✓|
+|Temperature|✓|✓|✓|✓|-|
+|Accelerometer|✓|✓|✓|✓|-|
+|Event|✓|✓|✓|-|-|
+|DFU|✓|✓|✓|-|✓|
+|UART|✓|✓|-|-|✓|
+|Magnetometer|✓|-|-|✓|✓|
+|IO Pin|✓|-|✓|✓|-|
 
-__Note:__ The configuration must mark `bluetooth` as being `open` in order for Web Bluetooth to work. e.g.:
+The source for these sample programs is based on the [codal example](https://github.com/microbit-foundation/codal) with the [main.cpp](https://github.com/thegecko/microbit-web-bluetooth/blob/master/examples/main.cpp) file as [outlined in the examples](https://github.com/thegecko/microbit-web-bluetooth/blob/master/examples).
+
+__Note:__ The `codal.json` configuration must mark `bluetooth` as being `open` in order for Web Bluetooth to work. e.g.:
 
 ```json
 {
-    "microbit-dal": {
-        "bluetooth": {
-            "enabled": 1,
-            "pairing_mode": 1,
-            "private_addressing": 0,
-            "open": 1,
-            "whitelist": 1,
-            "advertising_timeout": 0,
-            "tx_power": 0,
-            "dfu_service": 0,
-            "event_service": 1,
-            "device_info_service": 1,
-            "security_level": "SECURITY_MODE_ENCRYPTION_NO_MITM"
-        },
-        "gatt_table_size": "0x700"
+    "target": {
+        "name": "codal-microbit",
+        "url": "https://github.com/microbit-foundation/codal-microbit",
+        "branch": "master",
+        "type": "git",
+        "test_ignore": true,
+        "dev": true
+    } ,
+    "config":{
+        "DEVICE_BLE": 1,
+        "MICROBIT_BLE_ENABLED" : 1,
+        "MICROBIT_BLE_OPEN" : 1,
+        "MICROBIT_BLE_DFU_SERVICE": 1,
+        "MICROBIT_BLE_EVENT_SERVICE" : 1,
+        "MICROBIT_BLE_DEVICE_INFORMATION_SERVICE": 1
     }
 }
 ```

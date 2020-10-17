@@ -149,105 +149,37 @@
 			<p>Your micro:bit needs to be running a program which exposes the bluetooth service you wish to interact with. </p>
 			<p>Pre-compiled programs exposing bluetooth services are available for testing purposes:</p>
 			<p><a href="https://github.com/thegecko/microbit-web-bluetooth/tree/master/hex">https://github.com/thegecko/microbit-web-bluetooth/tree/master/hex</a></p>
-			<table>
-				<thead>
-					<tr>
-						<th>Service</th>
-						<th><a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-io.hex">no-magnet-no-io</a></th>
-						<th><a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-uart.hex">no-magnet-no-uart</a></th>
-						<th><a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-uart-no-dfu.hex">no-event-no-uart-no-dfu</a></th>
-						<th><a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-io-no-temp-no-acc.hex">no-event-no-io-no-temp-no-acc</a></th>
-					</tr>
-				</thead>
-				<tbody><tr>
-						<td>Device Info</td>
-						<td>✓</td>
-						<td>✓</td>
-						<td>✓</td>
-						<td>✓</td>
-					</tr>
-					<tr>
-						<td>Button</td>
-						<td>✓</td>
-						<td>✓</td>
-						<td>✓</td>
-						<td>✓</td>
-					</tr>
-					<tr>
-						<td>LED</td>
-						<td>✓</td>
-						<td>✓</td>
-						<td>✓</td>
-						<td>✓</td>
-					</tr>
-					<tr>
-						<td>Temperature</td>
-						<td>✓</td>
-						<td>✓</td>
-						<td>✓</td>
-						<td>-</td>
-					</tr>
-					<tr>
-						<td>Accelerometer</td>
-						<td>✓</td>
-						<td>✓</td>
-						<td>✓</td>
-						<td>-</td>
-					</tr>
-					<tr>
-						<td>Event</td>
-						<td>✓</td>
-						<td>✓</td>
-						<td>-</td>
-						<td>-</td>
-					</tr>
-					<tr>
-						<td>DFU</td>
-						<td>✓</td>
-						<td>✓</td>
-						<td>-</td>
-						<td>✓</td>
-					</tr>
-					<tr>
-						<td>UART</td>
-						<td>✓</td>
-						<td>-</td>
-						<td>-</td>
-						<td>✓</td>
-					</tr>
-					<tr>
-						<td>Magnetometer</td>
-						<td>-</td>
-						<td>-</td>
-						<td>✓</td>
-						<td>✓</td>
-					</tr>
-					<tr>
-						<td>IO Pin</td>
-						<td>-</td>
-						<td>✓</td>
-						<td>✓</td>
-						<td>-</td>
-					</tr>
-			</tbody></table>
-			<p>The source for a sample program to do this is <a href="https://github.com/lancaster-university/microbit-samples/tree/master/source/examples/bluetooth-services">available here</a>.</p>
-			<p><strong>Note:</strong> The configuration must mark <code>bluetooth</code> as being <code>open</code> in order for Web Bluetooth to work. e.g.:</p>
+			<p>The first image targets the new micro:bit v2 while older micro:bit v1 versions exist for backwards compatibility:</p>
+			<p>|Service|<a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-microbit-v2.hex">microbit-v2</a>|<a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-io.hex">no-magnet-no-io</a>|<a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-uart.hex">no-magnet-no-uart</a>|<a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-uart-no-dfu.hex">no-event-no-uart-no-dfu</a>|<a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-io-no-temp-no-acc.hex">no-event-no-io-no-temp-no-acc</a>|
+				|---|---|---|---|---|---|---|
+				|Device Info|✓|✓|✓|✓|✓|
+				|Button|✓|✓|✓|✓|✓|
+				|LED|✓|✓|✓|✓|✓|
+				|Temperature|✓|✓|✓|✓|-|
+				|Accelerometer|✓|✓|✓|✓|-|
+				|Event|✓|✓|✓|-|-|
+				|DFU|✓|✓|✓|-|✓|
+				|UART|✓|✓|-|-|✓|
+				|Magnetometer|✓|-|-|✓|✓|
+			|IO Pin|✓|-|✓|✓|-|</p>
+			<p>The source for these sample programs is based on the <a href="https://github.com/microbit-foundation/codal">codal example</a> with the <a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/examples/main.cpp">main.cpp</a> file as <a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/examples">outlined in the examples</a>.</p>
+			<p><strong>Note:</strong> The <code>codal.json</code> configuration must mark <code>bluetooth</code> as being <code>open</code> in order for Web Bluetooth to work. e.g.:</p>
 			<pre><code class="language-json">{
-    <span class="hljs-attr">"microbit-dal"</span>: {
-        <span class="hljs-attr">"bluetooth"</span>: {
-            <span class="hljs-attr">"enabled"</span>: <span class="hljs-number">1</span>,
-            <span class="hljs-attr">"pairing_mode"</span>: <span class="hljs-number">1</span>,
-            <span class="hljs-attr">"private_addressing"</span>: <span class="hljs-number">0</span>,
-            <span class="hljs-attr">"open"</span>: <span class="hljs-number">1</span>,
-            <span class="hljs-attr">"whitelist"</span>: <span class="hljs-number">1</span>,
-            <span class="hljs-attr">"advertising_timeout"</span>: <span class="hljs-number">0</span>,
-            <span class="hljs-attr">"tx_power"</span>: <span class="hljs-number">0</span>,
-            <span class="hljs-attr">"dfu_service"</span>: <span class="hljs-number">0</span>,
-            <span class="hljs-attr">"event_service"</span>: <span class="hljs-number">1</span>,
-            <span class="hljs-attr">"device_info_service"</span>: <span class="hljs-number">1</span>,
-            <span class="hljs-attr">"security_level"</span>: <span class="hljs-string">"SECURITY_MODE_ENCRYPTION_NO_MITM"</span>
-        },
-        <span class="hljs-attr">"gatt_table_size"</span>: <span class="hljs-string">"0x700"</span>
+    <span class="hljs-attr">"target"</span>: {
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"codal-microbit"</span>,
+        <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://github.com/microbit-foundation/codal-microbit"</span>,
+        <span class="hljs-attr">"branch"</span>: <span class="hljs-string">"master"</span>,
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"git"</span>,
+        <span class="hljs-attr">"test_ignore"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">"dev"</span>: <span class="hljs-literal">true</span>
+    } ,
+    <span class="hljs-attr">"config"</span>:{
+        <span class="hljs-attr">"DEVICE_BLE"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-attr">"MICROBIT_BLE_ENABLED"</span> : <span class="hljs-number">1</span>,
+        <span class="hljs-attr">"MICROBIT_BLE_OPEN"</span> : <span class="hljs-number">1</span>,
+        <span class="hljs-attr">"MICROBIT_BLE_DFU_SERVICE"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-attr">"MICROBIT_BLE_EVENT_SERVICE"</span> : <span class="hljs-number">1</span>,
+        <span class="hljs-attr">"MICROBIT_BLE_DEVICE_INFORMATION_SERVICE"</span>: <span class="hljs-number">1</span>
     }
 }</code></pre>
 			<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
