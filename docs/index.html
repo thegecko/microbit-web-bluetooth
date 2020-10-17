@@ -150,18 +150,98 @@
 			<p>Pre-compiled programs exposing bluetooth services are available for testing purposes:</p>
 			<p><a href="https://github.com/thegecko/microbit-web-bluetooth/tree/master/hex">https://github.com/thegecko/microbit-web-bluetooth/tree/master/hex</a></p>
 			<p>The first image targets the new micro:bit v2 while older micro:bit v1 versions exist for backwards compatibility:</p>
-			<p>|Service|<a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-microbit-v2.hex">microbit-v2</a>|<a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-io.hex">no-magnet-no-io</a>|<a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-uart.hex">no-magnet-no-uart</a>|<a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-uart-no-dfu.hex">no-event-no-uart-no-dfu</a>|<a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-io-no-temp-no-acc.hex">no-event-no-io-no-temp-no-acc</a>|
-				|---|---|---|---|---|---|---|
-				|Device Info|✓|✓|✓|✓|✓|
-				|Button|✓|✓|✓|✓|✓|
-				|LED|✓|✓|✓|✓|✓|
-				|Temperature|✓|✓|✓|✓|-|
-				|Accelerometer|✓|✓|✓|✓|-|
-				|Event|✓|✓|✓|-|-|
-				|DFU|✓|✓|✓|-|✓|
-				|UART|✓|✓|-|-|✓|
-				|Magnetometer|✓|-|-|✓|✓|
-			|IO Pin|✓|-|✓|✓|-|</p>
+			<table>
+				<thead>
+					<tr>
+						<th>Service</th>
+						<th><a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-microbit-v2.hex">microbit-v2</a></th>
+						<th><a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-io.hex">no-magnet-no-io</a></th>
+						<th><a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-uart.hex">no-magnet-no-uart</a></th>
+						<th><a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-uart-no-dfu.hex">no-event-no-uart-no-dfu</a></th>
+						<th><a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-io-no-temp-no-acc.hex">no-event-no-io-no-temp-no-acc</a></th>
+					</tr>
+				</thead>
+				<tbody><tr>
+						<td>Device Info</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+					</tr>
+					<tr>
+						<td>Button</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+					</tr>
+					<tr>
+						<td>LED</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+					</tr>
+					<tr>
+						<td>Temperature</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>-</td>
+					</tr>
+					<tr>
+						<td>Accelerometer</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>-</td>
+					</tr>
+					<tr>
+						<td>Event</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<tr>
+						<td>DFU</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>-</td>
+						<td>✓</td>
+					</tr>
+					<tr>
+						<td>UART</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>-</td>
+						<td>-</td>
+						<td>✓</td>
+					</tr>
+					<tr>
+						<td>Magnetometer</td>
+						<td>✓</td>
+						<td>-</td>
+						<td>-</td>
+						<td>✓</td>
+						<td>✓</td>
+					</tr>
+					<tr>
+						<td>IO Pin</td>
+						<td>✓</td>
+						<td>-</td>
+						<td>✓</td>
+						<td>✓</td>
+						<td>-</td>
+					</tr>
+			</tbody></table>
 			<p>The source for these sample programs is based on the <a href="https://github.com/microbit-foundation/codal">codal example</a> with the <a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/examples/main.cpp">main.cpp</a> file as <a href="https://github.com/thegecko/microbit-web-bluetooth/blob/master/examples">outlined in the examples</a>.</p>
 			<p><strong>Note:</strong> The <code>codal.json</code> configuration must mark <code>bluetooth</code> as being <code>open</code> in order for Web Bluetooth to work. e.g.:</p>
 			<pre><code class="language-json">{
