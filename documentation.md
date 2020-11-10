@@ -22,7 +22,7 @@ https://github.com/thegecko/microbit-web-bluetooth/tree/master/hex
 
 The first image targets the new micro:bit v2 while older micro:bit v1 versions exist for backwards compatibility:
 
-|Service|[microbit-v2](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-microbit-v2.hex)|[no-magnet-no-io](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-io.hex)|[no-magnet-no-uart](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-uart.hex)|[no-event-no-uart-no-dfu](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-uart-no-dfu.hex)|[no-event-no-io-no-temp-no-acc](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-io-no-temp-no-acc.hex)|
+|Service|[microbit-universal](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-microbit-universal.hex)|[no-magnet-no-io](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-io.hex)|[no-magnet-no-uart](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-magnet-no-uart.hex)|[no-event-no-uart-no-dfu](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-uart-no-dfu.hex)|[no-event-no-io-no-temp-no-acc](https://github.com/thegecko/microbit-web-bluetooth/blob/master/hex/ble-open-no-event-no-io-no-temp-no-acc.hex)|
 |---|---|---|---|---|---|
 |Device Info|✓|✓|✓|✓|✓|
 |Button|✓|✓|✓|✓|✓|
