@@ -35,7 +35,7 @@ The first image targets the new micro:bit v2 while older micro:bit v1 versions e
 |Magnetometer|✓|-|-|✓|✓|
 |IO Pin|✓|-|✓|✓|-|
 
-The source for these sample programs is based on the [codal example](https://github.com/microbit-foundation/codal) with the [main.cpp](https://github.com/thegecko/microbit-web-bluetooth/blob/master/examples/main.cpp) file as [outlined in the examples](https://github.com/thegecko/microbit-web-bluetooth/blob/master/examples).
+The source for these sample programs is based on the [codal example](https://github.com/lancaster-university/microbit-v2-samples/) with the [main.cpp](https://github.com/thegecko/microbit-web-bluetooth/blob/master/examples/main.cpp) file as [outlined in the examples](https://github.com/thegecko/microbit-web-bluetooth/blob/master/examples).
 
 __Note:__ The `codal.json` configuration must mark `bluetooth` as being `open` in order for Web Bluetooth to work. e.g.:
 

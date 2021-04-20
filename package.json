@@ -1,6 +1,6 @@
 {
   "name": "microbit-web-bluetooth",
-  "version": "0.6.1-next.68500b7.0",
+  "version": "0.6.1-next.fdc0b96.0",
   "description": "Web Bluetooth library for micro:bit",
   "homepage": "https://github.com/thegecko/microbit-web-bluetooth",
   "license": "MIT",
