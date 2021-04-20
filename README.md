@@ -6,6 +6,8 @@
 
 Web Bluetooth library for micro:bit implementing the [micro:bit Bluetooth Profile](https://lancaster-university.github.io/microbit-docs/resources/bluetooth/bluetooth_profile.html).
 
+See the [microbit-web-components library](https://github.com/thegecko/microbit-web-components) for some ready-to-use web components which use this library.
+
 ## Prerequisites
 
 [Node.js > v10.16.0](https://nodejs.org), which includes `npm`
