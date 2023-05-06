@@ -21,7 +21,8 @@
   ],
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
-    "build": "rollup -c && typedoc src",
+    "build": "rollup -c && npm run docs",
+    "docs": "typedoc src",
     "watch": "rollup -c -w",
     "watch:web": "rollup -c rollup.web.config.js -w"
   },
