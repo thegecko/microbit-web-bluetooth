@@ -1,13 +1,15 @@
 name: ci
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
     branches:
       - master
   workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build:
@@ -26,12 +28,3 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: '.'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
