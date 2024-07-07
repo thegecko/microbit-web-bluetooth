@@ -33,6 +33,7 @@ import { IoPinService } from './services/io-pin';
 import { UartService } from './services/uart';
 import { EventService } from './services/event';
 import { DfuControlService } from './services/dfu-control';
+import { RpcService } from './services/rpc';
 
 export interface Services {
     deviceInformationService?: DeviceInformationService;
@@ -45,6 +46,7 @@ export interface Services {
     eventService?: EventService;
     dfuControlService?: DfuControlService;
     ioPinService?: IoPinService;
+    rpcService?: RpcService;
 }
 
 /**
@@ -121,6 +123,7 @@ export const getServices = async (device: BluetoothDevice): Promise<Services> =>
     const eventService = await builder.createService(EventService);
     const dfuControlService = await builder.createService(DfuControlService);
     const ioPinService = await builder.createService(IoPinService);
+    const rpcService = uartService ? new RpcService(uartService) : undefined;
 
     return {
         deviceInformationService,
@@ -132,6 +135,7 @@ export const getServices = async (device: BluetoothDevice): Promise<Services> =>
         uartService,
         eventService,
         dfuControlService,
-        ioPinService
+        ioPinService,
+        rpcService
     };
 };
