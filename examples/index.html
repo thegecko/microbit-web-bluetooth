@@ -23,7 +23,15 @@
                         logJson(await services.deviceInformationService.readDeviceInformation());
                     }
 
-                    if (services.uartService) {
+                    if (services.rpcService) {
+                        services.rpcService.addEventListener("receiveCommand", e => {
+                            log(`command: ${e.command}`);
+                            if (e.value) {
+                                log(`value: ${e.value}`);
+                            }
+                        });
+                        await services.rpcService.narg();
+                    } else if (services.uartService) {
                         services.uartService.addEventListener("receiveText", eventHandler);
                         await services.uartService.send(new Uint8Array([104, 101, 108, 108, 111, 58])); // hello:
                     }
