@@ -5,7 +5,7 @@
 * The MIT License (MIT)
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
+* of this software and associated documentation files (the 'Software'), to deal
 * in the Software without restriction, including without limitation the rights
 * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 * copies of the Software, and to permit persons to whom the Software is
@@ -14,7 +14,7 @@
 * The above copyright notice and this permission notice shall be included in all
 * copies or substantial portions of the Software.
 *
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -23,17 +23,17 @@
 * SOFTWARE.
 */
 
-import { ServiceHelper } from "../service-helper";
+import { ServiceHelper } from '../service-helper';
 
 /**
  * @hidden
  */
 export enum DeviceInformationCharacteristic {
-    modelNumber = "00002a24-0000-1000-8000-00805f9b34fb",
-    serialNumber = "00002a25-0000-1000-8000-00805f9b34fb",
-    firmwareRevision = "00002a26-0000-1000-8000-00805f9b34fb",
-    hardwareRevision = "00002a27-0000-1000-8000-00805f9b34fb",
-    manufacturer = "00002a29-0000-1000-8000-00805f9b34fb"
+    modelNumber = '00002a24-0000-1000-8000-00805f9b34fb',
+    serialNumber = '00002a25-0000-1000-8000-00805f9b34fb',
+    firmwareRevision = '00002a26-0000-1000-8000-00805f9b34fb',
+    hardwareRevision = '00002a27-0000-1000-8000-00805f9b34fb',
+    manufacturer = '00002a29-0000-1000-8000-00805f9b34fb'
 }
 
 /**
@@ -70,7 +70,7 @@ export class DeviceInformationService {
     /**
      * @hidden
      */
-    public static uuid = "0000180a-0000-1000-8000-00805f9b34fb";
+    public static uuid = '0000180a-0000-1000-8000-00805f9b34fb';
 
     /**
      * @hidden

@@ -1,15 +1,14 @@
+import { createRequire } from 'node:module';
 import del from "rollup-plugin-delete";
-import tslint from "rollup-plugin-tslint";
-import builtins from "rollup-plugin-node-builtins";
+import eslint from '@rollup/plugin-eslint';
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 import typescript from "rollup-plugin-typescript2";
-import { terser } from "rollup-plugin-terser";
+import terser from '@rollup/plugin-terser';
 import sourceMaps from "rollup-plugin-sourcemaps"
-import serve from "rollup-plugin-serve";
-import livereload from "rollup-plugin-livereload";
 
 const name = "microbit";
+const require = createRequire(import.meta.url);
 const pkg = require('./package.json');
-const watch = process.env.ROLLUP_WATCH;
 
 export default {
     input: "src/index.ts",
@@ -27,26 +26,20 @@ export default {
         }
     ],
     plugins: [
-        !watch && del({
+        del({
             targets: [
                 "dist/*",
                 "types/*"
             ]
         }),
-        tslint({
+        eslint({
             throwOnError: true
         }),
-        builtins(),
+        nodePolyfills(),
         typescript({
             useTsconfigDeclarationDir: true
         }),
         terser(),
-        sourceMaps(),
-        watch && serve({
-            contentBase: ".",
-            open: true,
-            openPage: "/examples/index.html",
-        }),
-        watch && livereload()
+        sourceMaps()
     ]
 };

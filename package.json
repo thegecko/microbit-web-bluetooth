@@ -7,11 +7,14 @@
   "main": "dist/microbit.umd.js",
   "module": "dist/microbit.esm.js",
   "types": "types/index.d.ts",
+  "author": "Rob Moran <rob@thegecko.org>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thegecko/microbit-web-bluetooth.git"
   },
-  "author": "Rob Moran <rob@thegecko.org>",
+  "engines": {
+    "node": ">=10.16.0"
+  },
   "keywords": [
     "micro:bit",
     "microbit",
@@ -20,36 +23,30 @@
     "bluetooth"
   ],
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
     "build": "rollup -c && npm run docs",
     "docs": "typedoc src",
     "watch": "rollup -c -w",
-    "watch:web": "rollup -c rollup.web.config.js -w"
-  },
-  "engines": {
-    "node": ">=10.16.0"
-  },
-  "devDependencies": {
-    "npm-force-resolutions": "0.0.3",
-    "rollup": "^2.29.0",
-    "rollup-plugin-delete": "^1.2.0",
-    "rollup-plugin-livereload": "^1.3.0",
-    "rollup-plugin-node-builtins": "^2.1.2",
-    "rollup-plugin-serve": "^1.0.4",
-    "rollup-plugin-sourcemaps": "^0.5.0",
-    "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-tslint": "^0.2.2",
-    "rollup-plugin-typescript2": "^0.27.3",
-    "tslint": "^6.1.3",
-    "tslint-eslint-rules": "^5.4.0",
-    "typedoc": "0.15.0",
-    "typescript": "^3.9.7"
+    "watch:web": "rollup -c rollup.web.config.mjs -w"
   },
   "dependencies": {
-    "@types/node": "8.10.40",
-    "@types/web-bluetooth": "~0.0.9"
+    "@types/node": "^20.12.12",
+    "@types/web-bluetooth": "^0.0.20"
   },
-  "resolutions": {
-    "levelup": "4.4.0"
+  "devDependencies": {
+    "@rollup/plugin-eslint": "^9.0.5",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@typescript-eslint/eslint-plugin": "^7.15.0",
+    "@typescript-eslint/parser": "^7.15.0",
+    "eslint": "^8.57.0",
+    "rollup": "^2.29.0",
+    "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-livereload": "^2.0.5",
+    "rollup-plugin-polyfill-node": "^0.13.0",
+    "rollup-plugin-serve": "^1.1.1",
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "rollup-plugin-typescript2": "^0.27.3",
+    "tslib": "2.6.3",
+    "typedoc": "^0.26.3",
+    "typescript": "^5.5.3"
   }
 }

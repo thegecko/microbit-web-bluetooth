@@ -5,7 +5,7 @@
 * The MIT License (MIT)
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
+* of this software and associated documentation files (the 'Software'), to deal
 * in the Software without restriction, including without limitation the rights
 * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 * copies of the Software, and to permit persons to whom the Software is
@@ -14,7 +14,7 @@
 * The above copyright notice and this permission notice shall be included in all
 * copies or substantial portions of the Software.
 *
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -23,17 +23,17 @@
 * SOFTWARE.
 */
 
-import { EventDispatcher, TypedDispatcher } from "../event-dispatcher";
-import { ServiceHelper } from "../service-helper";
+import { EventDispatcher, TypedDispatcher } from '../event-dispatcher';
+import { ServiceHelper } from '../service-helper';
 
 /**
  * @hidden
  */
 export enum MagnetometerCharacteristic {
-    magnetometerData = "e95dfb11-251d-470a-a062-fa1922dfa9a8",
-    magnetometerPeriod = "e95d386c-251d-470a-a062-fa1922dfa9a8",
-    magnetometerBearing = "e95d9715-251d-470a-a062-fa1922dfa9a8",
-    magnetometerCalibration = "e95db358-251d-470a-a062-fa1922dfa9a8"
+    magnetometerData = 'e95dfb11-251d-470a-a062-fa1922dfa9a8',
+    magnetometerPeriod = 'e95d386c-251d-470a-a062-fa1922dfa9a8',
+    magnetometerBearing = 'e95d9715-251d-470a-a062-fa1922dfa9a8',
+    magnetometerCalibration = 'e95db358-251d-470a-a062-fa1922dfa9a8'
 }
 
 /**
@@ -115,7 +115,7 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
     /**
      * @hidden
      */
-    public static uuid = "e95df2d8-251d-470a-a062-fa1922dfa9a8";
+    public static uuid = 'e95df2d8-251d-470a-a062-fa1922dfa9a8';
 
     /**
      * @hidden
@@ -137,9 +137,9 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
     }
 
     private async init() {
-        await this.helper.handleListener("magnetometerdatachanged", MagnetometerCharacteristic.magnetometerData, this.magnetometerDataChangedHandler.bind(this));
-        await this.helper.handleListener("magnetometerbearingchanged", MagnetometerCharacteristic.magnetometerBearing, this.magnetometerBearingChangedHandler.bind(this));
-        await this.helper.handleListener("magnetometercalibrationchanged", MagnetometerCharacteristic.magnetometerCalibration, this.magnetometerCalibrationChangedHandler.bind(this));
+        await this.helper.handleListener('magnetometerdatachanged', MagnetometerCharacteristic.magnetometerData, this.magnetometerDataChangedHandler.bind(this));
+        await this.helper.handleListener('magnetometerbearingchanged', MagnetometerCharacteristic.magnetometerBearing, this.magnetometerBearingChangedHandler.bind(this));
+        await this.helper.handleListener('magnetometercalibrationchanged', MagnetometerCharacteristic.magnetometerCalibration, this.magnetometerCalibrationChangedHandler.bind(this));
     }
 
     /**
@@ -189,20 +189,20 @@ export class MagnetometerService extends (EventDispatcher as new() => TypedDispa
     private magnetometerDataChangedHandler(event: Event) {
         const view = (event.target as BluetoothRemoteGATTCharacteristic).value!;
         const value = this.dataViewToMagnetometerData(view);
-        this.dispatchEvent("magnetometerdatachanged", value);
+        this.dispatchEvent('magnetometerdatachanged', value);
     }
 
     private magnetometerBearingChangedHandler(event: Event) {
         const view = (event.target as BluetoothRemoteGATTCharacteristic).value!;
         if (view.byteLength === 2) {
-            this.dispatchEvent("magnetometerbearingchanged", view.getUint16(0, true));
+            this.dispatchEvent('magnetometerbearingchanged', view.getUint16(0, true));
         }
     }
 
     private magnetometerCalibrationChangedHandler(event: Event) {
         const view = (event.target as BluetoothRemoteGATTCharacteristic).value!;
         if (view.byteLength === 1) {
-            this.dispatchEvent("magnetometercalibrationchanged", view.getUint8(0) as MagnetometerCalibration);
+            this.dispatchEvent('magnetometercalibrationchanged', view.getUint8(0) as MagnetometerCalibration);
         }
     }
 

@@ -23,16 +23,16 @@
 * SOFTWARE.
 */
 
-import { DeviceInformationService } from "./services/device-information";
-import { ButtonService } from "./services/button";
-import { LedService } from "./services/led";
-import { TemperatureService } from "./services/temperature";
-import { AccelerometerService } from "./services/accelerometer";
-import { MagnetometerService } from "./services/magnetometer";
-import { IoPinService } from "./services/io-pin";
-import { UartService } from "./services/uart";
-import { EventService } from "./services/event";
-import { DfuControlService } from "./services/dfu-control";
+import { DeviceInformationService } from './services/device-information';
+import { ButtonService } from './services/button';
+import { LedService } from './services/led';
+import { TemperatureService } from './services/temperature';
+import { AccelerometerService } from './services/accelerometer';
+import { MagnetometerService } from './services/magnetometer';
+import { IoPinService } from './services/io-pin';
+import { UartService } from './services/uart';
+import { EventService } from './services/event';
+import { DfuControlService } from './services/dfu-control';
 
 export interface Services {
     deviceInformationService?: DeviceInformationService;
@@ -52,6 +52,7 @@ export interface Services {
  */
 interface Service {
     uuid: BluetoothCharacteristicUUID;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     create(service: BluetoothRemoteGATTService): Promise<any>;
 }
 
@@ -78,7 +79,7 @@ export const requestMicrobit = async (bluetooth: Bluetooth): Promise<BluetoothDe
     const device = await bluetooth.requestDevice({
         filters: [
             {
-                namePrefix: "BBC micro:bit"
+                namePrefix: 'BBC micro:bit'
             }
         ],
         optionalServices: [

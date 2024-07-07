@@ -5,7 +5,7 @@
 * The MIT License (MIT)
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
+* of this software and associated documentation files (the 'Software'), to deal
 * in the Software without restriction, including without limitation the rights
 * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 * copies of the Software, and to permit persons to whom the Software is
@@ -14,7 +14,7 @@
 * The above copyright notice and this permission notice shall be included in all
 * copies or substantial portions of the Software.
 *
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -23,15 +23,15 @@
 * SOFTWARE.
 */
 
-import { EventDispatcher, TypedDispatcher } from "../event-dispatcher";
-import { ServiceHelper } from "../service-helper";
+import { EventDispatcher, TypedDispatcher } from '../event-dispatcher';
+import { ServiceHelper } from '../service-helper';
 
 /**
  * @hidden
  */
 export enum AccelerometerCharacteristic {
-    accelerometerData = "e95dca4b-251d-470a-a062-fa1922dfa9a8",
-    accelerometerPeriod = "e95dfb24-251d-470a-a062-fa1922dfa9a8"
+    accelerometerData = 'e95dca4b-251d-470a-a062-fa1922dfa9a8',
+    accelerometerPeriod = 'e95dfb24-251d-470a-a062-fa1922dfa9a8'
 }
 
 /**
@@ -83,7 +83,7 @@ export class AccelerometerService extends (EventDispatcher as new() => TypedDisp
     /**
      * @hidden
      */
-    public static uuid = "e95d0753-251d-470a-a062-fa1922dfa9a8";
+    public static uuid = 'e95d0753-251d-470a-a062-fa1922dfa9a8';
 
     /**
      * @hidden
@@ -105,7 +105,7 @@ export class AccelerometerService extends (EventDispatcher as new() => TypedDisp
     }
 
     private async init() {
-        await this.helper.handleListener("accelerometerdatachanged", AccelerometerCharacteristic.accelerometerData, this.accelerometerDataChangedHandler.bind(this));
+        await this.helper.handleListener('accelerometerdatachanged', AccelerometerCharacteristic.accelerometerData, this.accelerometerDataChangedHandler.bind(this));
     }
 
     /**
@@ -137,7 +137,7 @@ export class AccelerometerService extends (EventDispatcher as new() => TypedDisp
     private accelerometerDataChangedHandler(event: Event) {
         const view = (event.target as BluetoothRemoteGATTCharacteristic).value!;
         const value = this.dataViewToAccelerometerData(view);
-        this.dispatchEvent("accelerometerdatachanged", value);
+        this.dispatchEvent('accelerometerdatachanged', value);
     }
 
     private dataViewToAccelerometerData(view: DataView): AccelerometerData {
