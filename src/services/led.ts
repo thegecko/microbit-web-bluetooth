@@ -73,7 +73,7 @@ export class LedService {
 
     /**
      * Write text to the LED matrix
-     * @param text Te text to display
+     * @param text The text to display
      */
     public async writeText(text: string): Promise<void> {
         const encoded = this.encodeString(text);
@@ -116,12 +116,8 @@ export class LedService {
     }
 
     private encodeString(text: string): ArrayBuffer {
-        const buffer = new ArrayBuffer(text.length);
-        const view = new Uint8Array(buffer);
-        for (let i = 0; i < text.length; i++) {
-            view[i] = text.charCodeAt(i);
-        }
-        return buffer;
+        const encoder = new TextEncoder();
+        return encoder.encode(text);
     }
 
     private viewToLedMatrix(view: DataView): LedMatrix {

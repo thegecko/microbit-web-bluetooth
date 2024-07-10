@@ -115,8 +115,8 @@ export class DeviceInformationService {
     private async readStringCharacteristic(uuid: BluetoothCharacteristicUUID): Promise<string | undefined> {
         try {
             const view = await this.helper.getCharacteristicValue(uuid);
-            const buffer = view.buffer.slice(view.byteOffset, view.byteOffset + view.byteLength);
-            return String.fromCharCode.apply(null, Array.from(new Uint8Array(buffer)));
+            const decoder = new TextDecoder();
+            return decoder.decode(view.buffer);
         } catch (_e) {
             return undefined;
         }
