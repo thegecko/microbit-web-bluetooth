@@ -24,11 +24,12 @@
                     }
 
                     if (services.rpcService) {
-                        services.rpcService.addEventListener("receiveCommand", e => {
-                            log(`command: ${e.command}`);
+                        services.rpcService.addEventListener("receiveCommand", event => {
+                        let command = `command: ${event.command}`;
                             if (e.value) {
-                                log(`value: ${e.value}`);
+                                command = `${command}, value: ${event.value}`;
                             }
+                            log(command);
                         });
                         await services.rpcService.narg();
                     } else if (services.uartService) {
