@@ -1,10 +1,8 @@
 .DS_Store
 .vscode
 .rpt2_cache
-docs-theme
 hex
 node_modules
 .gitignore
-circle.yml
 index.html
 npm-debug.log
